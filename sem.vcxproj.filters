@@ -37,18 +37,47 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\mainwindow.cpp">
+    <ClCompile Include="src\initializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\initializer.cpp">
+    <ClCompile Include="src\mainwindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\widget_menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\widget_util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\widget_page.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="src\design.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\mainwindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\model.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <ClInclude Include="src\qheader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <QtMoc Include="src\widget_menu.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\wrapped_widget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\widget_page.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -64,24 +93,7 @@
     </QtUic>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="src\mainwindow.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="src\design.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="src\model.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="src\wrapped_widget.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="src\widget_menu.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\qheader.h">
+    <ClInclude Include="src\widget_util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

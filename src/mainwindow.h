@@ -7,7 +7,7 @@ namespace Ui {
 class MainWindow;
 }
 class Design; class Model;
-class WidgetMenu;
+class WidgetMenu; class WidgetPage;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -33,10 +33,10 @@ private:
 	Model* m;
     Ui::MainWindow *ui;
 	QWidget* frameMenu;
-	QWidget* frameList;
-	QWidget* frameUtil;
+	QWidget* framePage;
 
 	WidgetMenu* widgetMenu;
+	WidgetPage* widgetPage;
 
 	void setWidget(QWidget* w, QRect geometry, QString color);
 	void connections();

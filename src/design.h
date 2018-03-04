@@ -23,8 +23,8 @@ class Design : public QObject {
 		Q_PROPERTY(int heightWindow READ heightWindow WRITE setHeightWindow NOTIFY heightWindowChanged)
 		Q_PROPERTY(int widthMenu  READ widthMenu  WRITE setWidthMenu  NOTIFY widthMenuChanged)
 		Q_PROPERTY(int heightMenu READ heightMenu WRITE setHeightMenu NOTIFY heightMenuChanged)
-		Q_PROPERTY(int widthList READ widthList  WRITE setWidthList  NOTIFY widthListChanged)
-		Q_PROPERTY(int heightList READ heightList WRITE setHeightList NOTIFY heightListChanged)
+		Q_PROPERTY(int widthPage READ widthPage  WRITE setWidthPage  NOTIFY widthPageChanged)
+		Q_PROPERTY(int heightPage READ heightPage WRITE setHeightPage NOTIFY heightPageChanged)
 		Q_PROPERTY(int widthUtil READ widthUtil  WRITE setWidthUtil  NOTIFY widthUtilChanged)
 		Q_PROPERTY(int heightUtil READ heightUtil WRITE setHeightUtil NOTIFY heightUtilChanged)
 
@@ -41,15 +41,15 @@ public:
 
 	const int MIM_WINDOW_WIDTH = 1080;
 	const int MIM_WINDOW_HEIGHT = 720;
-	const int MAX_WINDOW_WIDTH = 1920;
-	const int MAX_WINDOW_HEIGHT = 1080;
+	const int MAX_WINDOW_WIDTH = 1500;
+	const int MAX_WINDOW_HEIGHT = 900;
 
 	int widthWindow() const { return m_widthWindow; }
 	int heightWindow() const { return m_heightWindow; }
 	int widthMenu() const { return m_widthMenu; }
 	int heightMenu() const { return m_heightMenu; }
-	int widthList() const { return m_widthList; }
-	int heightList() const { return m_heightList; }
+	int widthPage() const { return m_widthPage; }
+	int heightPage() const { return m_heightPage; }
 	int widthUtil() const { return m_widthUtil; }
 	int heightUtil() const { return m_heightUtil; }
 	void initialize();
@@ -60,8 +60,8 @@ public:
 	void setHeightWindow(const int &m) { m_heightWindow = m; emit heightWindowChanged(); }
 	void setWidthMenu(const int &m) { m_widthMenu = m; emit widthMenuChanged(); }
 	void setHeightMenu(const int &m) { m_heightMenu = m; emit heightMenuChanged(); }
-	void setWidthList(const int &m) { m_widthList = m; emit widthListChanged(); }
-	void setHeightList(const int &m) { m_heightList = m; emit heightListChanged(); }
+	void setWidthPage(const int &m) { m_widthPage = m; emit widthPageChanged(); }
+	void setHeightPage(const int &m) { m_heightPage = m; emit heightPageChanged(); }
 	void setWidthUtil(const int &m) { m_widthUtil = m; emit widthUtilChanged(); }
 	void setHeightUtil(const int &m) { m_heightUtil = m; emit heightUtilChanged(); }
 
@@ -70,8 +70,8 @@ signals:
 	void heightWindowChanged();
 	void widthMenuChanged();
 	void heightMenuChanged();
-	void widthListChanged();
-	void heightListChanged();
+	void widthPageChanged();
+	void heightPageChanged();
 	void widthUtilChanged();
 	void heightUtilChanged();
 
@@ -86,8 +86,8 @@ private:
 	int m_widthUtil = m_widthWindow;
 	int m_heightUtil = pt(100);
 
-	int m_widthList = m_widthWindow;
-	int m_heightList = m_heightWindow - m_heightMenu - m_heightUtil;
+	int m_widthPage = m_widthWindow;
+	int m_heightPage = m_heightWindow - m_heightMenu;
 };
 //extern Design D;
 

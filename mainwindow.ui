@@ -34,16 +34,6 @@
      </rect>
     </property>
    </widget>
-   <widget class="QWidget" name="widget_util" native="true">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>190</y>
-      <width>120</width>
-      <height>80</height>
-     </rect>
-    </property>
-   </widget>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

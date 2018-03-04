@@ -1,7 +1,6 @@
 ﻿#include "widget_menu.h"
 
-WidgetMenu::WidgetMenu(QWidget *parent) :
-	WWidget(parent)
+WidgetMenu::WidgetMenu(QWidget *parent) : WWidget(parent)
 {
 	this->setGeometry(QRect(0, 0, parent->geometry().width(), parent->geometry().height()));
 	mainWidget1 = new QWidget;
@@ -69,6 +68,7 @@ QPushButton* WidgetMenu::createButton(QString name) {
 
 void WidgetMenu::resize()
 {
+    qDebug() << "width: " << d->widthMenu();
 	mainWidget1->setFixedWidth(d->widthMenu() - 200);
 	mainWidget2->setGeometry(d->widthMenu() - 200, 0, 200, d->heightMenu());
 }
