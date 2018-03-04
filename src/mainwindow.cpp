@@ -52,7 +52,7 @@ void MainWindow::initializeUI()
 	vBoxMenubar->addWidget(widgetMenu);
 
 	y += h; w = d->widthPage(); h = d->heightPage(); 
-	setWidget(framePage, QRect(x, y, w, h), d->c().grary01);
+	setWidget(framePage, QRect(x, y, w, h), d->c().testColor02);
 	widgetPage = new WidgetPage(framePage);
 	QVBoxLayout* vBoxList = new QVBoxLayout(framePage);
 	vBoxList->setMargin(0);
@@ -92,34 +92,43 @@ void MainWindow::setWidget(QWidget* w, QRect geometry, QString color)
 
 void MainWindow::connections()
 {
-	connect(widgetMenu->btnDeviceList(), SIGNAL(clicked()), this, SLOT(deviceList()));
-	connect(widgetMenu->btnDeviceManagementList(), SIGNAL(clicked()), this, SLOT(deviceManagementList()));
-	connect(widgetMenu->btnEmployeeManagementList(), SIGNAL(clicked()), this, SLOT(employeeManagementList()));
-	connect(widgetMenu->btnBorrow(), SIGNAL(clicked()), this, SLOT(borrow()));
-	connect(widgetMenu->btnReturn(), SIGNAL(clicked()), this, SLOT(_return()));
+	disconnect(widgetMenu->btnDeviceList(), SIGNAL(clicked()), this, SLOT(listDVIces()));
+	connect(widgetMenu->btnDeviceManagementList(), SIGNAL(clicked()), this, SLOT(listMNGements()));
+	connect(widgetMenu->btnEmployeeManagementList(), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
+	connect(widgetMenu->btnBorrow(), SIGNAL(clicked()), this, SLOT(doBorrow()));
+	connect(widgetMenu->btnReturn(), SIGNAL(clicked()), this, SLOT(doReturn()));
 }
 
-void MainWindow::deviceList()
+void MainWindow::listDVIces()
+{
+	widgetPage->listDVIces();
+	disconnect(widgetMenu->btnDeviceList(), SIGNAL(clicked()), this, SLOT(listDVIces()));
+	connect(widgetMenu->btnDeviceManagementList(), SIGNAL(clicked()), this, SLOT(listMNGements()));
+	connect(widgetMenu->btnEmployeeManagementList(), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
+}
+
+void MainWindow::listMNGements()
+{
+	widgetPage->listMNGements();
+	connect(widgetMenu->btnDeviceList(), SIGNAL(clicked()), this, SLOT(listDVIces()));
+	disconnect(widgetMenu->btnDeviceManagementList(), SIGNAL(clicked()), this, SLOT(listMNGements()));
+	connect(widgetMenu->btnEmployeeManagementList(), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
+}
+
+void MainWindow::listEMPloyees()
+{
+	widgetPage->listEMPloyees();
+	connect(widgetMenu->btnDeviceList(), SIGNAL(clicked()), this, SLOT(listDVIces()));
+	connect(widgetMenu->btnDeviceManagementList(), SIGNAL(clicked()), this, SLOT(listMNGements()));
+	disconnect(widgetMenu->btnEmployeeManagementList(), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
+}
+
+void MainWindow::doBorrow()
 {
 
 }
 
-void MainWindow::deviceManagementList()
-{
-
-}
-
-void MainWindow::employeeManagementList()
-{
-
-}
-
-void MainWindow::borrow()
-{
-
-}
-
-void MainWindow::_return()
+void MainWindow::doReturn()
 {
 
 }

@@ -19,11 +19,11 @@ public:
 	public slots:
 	void initializeUI();
 	void resize();
-	void deviceList();
-	void deviceManagementList();
-	void employeeManagementList();
-	void borrow();
-	void _return();
+	void listDVIces();
+	void listMNGements();
+	void listEMPloyees();
+	void doBorrow();
+	void doReturn();
 
 protected:
 	void resizeEvent(QResizeEvent *event) override;

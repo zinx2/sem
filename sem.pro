@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -26,16 +26,27 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         src/main.cpp \
         src/mainwindow.cpp \
+        src/networker.cpp \
         src/initializer.cpp \
-        src/widget_menu.cpp
+        src/widget_menu.cpp \
+        src/widget_page.cpp \
+        src/widget_list_devices.cpp \
+        src/widget_list_employees.cpp \
+        src/widget_list_managements.cpp \
+
 
 HEADERS += \
         src/mainwindow.h \
         src/design.h \
         src/model.h \
         src/qheader.h \
+        src/networker.h \
         src/widget_menu.h \
-        src/wrapped_widget.h
+        src/wrapped_widget.h \
+        src/widget_page.h \
+        src/widget_list_devices.h \
+        src/widget_list_employees.h \
+        src/widget_list_managements.h \
 
 
 FORMS += \

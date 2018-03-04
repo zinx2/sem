@@ -4,12 +4,13 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonValue>
+#include "model.h"
 //#include "imageresponseprovider.h"
 
 NetWorker* NetWorker::m_instance = nullptr;
 NetWorker::NetWorker(QObject *parent) : QObject(parent)
 {
-	m_model = Model::getInstance();
+	m = Model::instance();
 }
 NetWorker::~NetWorker()
 {
@@ -145,6 +146,114 @@ void NetWorker::postDemo(int id)
 		}
 
 		/********** CLEAR QNetworkReply INSTANCE **********/
+		m_netReply->deleteLater();
+	});
+}
+
+void NetWorker::getUserList()
+{
+	requestPOST(createRequest("/sem/getUserList"),
+		[&]()-> void {
+		QMutexLocker locker(&m_mtx);
+
+		QJsonDocument jsonDoc = QJsonDocument::fromJson(m_netReply->readAll());
+		QJsonObject jsonObj = jsonDoc.object();
+		bool isSuccess = jsonObj["is_success"].toBool();
+
+		if (!isSuccess) {
+			m_netReply->deleteLater();
+			return;
+		}
+
+		QList<Employee*> list;
+		QJsonArray jsonArr = jsonObj["data_list"].toArray();
+		foreach(const QJsonValue &value, jsonArr)
+		{
+			QJsonObject obj = value.toObject();
+
+			Employee d; 
+			d.setNo(obj["sem_user_no"].toInt());
+			d.setName(obj["sem_user_name"].toString());
+			qDebug() << d.no() << "/" << d.name();
+			list.append(&d);
+		}
+		m->setEmployees(list);
+		m_netReply->deleteLater();
+	});
+}
+
+void NetWorker::getPartList()
+{
+	requestPOST(createRequest("/sem/getPartList"),
+		[&]()-> void {
+		QMutexLocker locker(&m_mtx);
+
+		QJsonDocument jsonDoc = QJsonDocument::fromJson(m_netReply->readAll());
+		QJsonObject jsonObj = jsonDoc.object();
+		bool isSuccess = jsonObj["is_success"].toBool();
+
+		if (!isSuccess) {
+			m_netReply->deleteLater();
+			return;
+		}
+
+		QList<Part*> list;
+		QJsonArray jsonArr = jsonObj["data_list"].toArray();
+		foreach(const QJsonValue &value, jsonArr)
+		{
+			QJsonObject obj = value.toObject();
+
+			Part d;
+			d.setNo(obj["part_no"].toInt());
+			d.setName(obj["part_name"].toString());
+			d.isSystem(obj["is_system_part"].toBool());
+			qDebug() << d.no() << "/" << d.name() << "/" << d.system();
+			list.append(&d);
+		}
+		m->setParts(list);
+		m_netReply->deleteLater();
+	});
+}
+
+void NetWorker::getDeviceList(int searchType, int now)
+{
+	/********** SET URL QUERIES **********/
+	m_queries.addQueryItem("search_type", QString("%1").arg(searchType));
+	m_queries.addQueryItem("now_page", QString("%1").arg(now));
+
+	requestPOST(createRequest("/sem/getDeviceList"),
+		[&]()-> void {
+		QMutexLocker locker(&m_mtx);
+
+		QJsonDocument jsonDoc = QJsonDocument::fromJson(m_netReply->readAll());
+		QJsonObject jsonObj = jsonDoc.object();
+		bool isSuccess = jsonObj["is_success"].toBool();
+
+		if (!isSuccess) {
+			m_netReply->deleteLater();
+			return;
+		}
+		int totalPage = jsonObj["total_page"].toInt();
+
+		QList<Device*> list;
+		QJsonArray jsonArr = jsonObj["data_list"].toArray();
+		foreach(const QJsonValue &value, jsonArr)
+		{
+			QJsonObject obj = value.toObject();
+
+			Device d;
+			d.setNo(obj["sem_device_no"].toInt());
+			d.setName(obj["device_name"].toString());
+			d.setAssetNo(obj["asset_no"].toString());
+			d.setBarcode(obj["barcode"].toString());
+			d.setPrice(obj["get_money"].toString());
+			d.setDate(obj["get_date"].toString());
+			d.setMemo(obj["memo"].toString());
+			d.borrow(obj["is_rented"].toInt());
+			qDebug() << d.no() << "/" << d.name() << "/" << d.name() << d.assetNo() << "/" << d.barcode() << "/" << d.price() << "/" << d.date() << "/" << d.memo() << "/" << d.borrowed();
+			list.append(&d);
+		}
+		m->setDevices(list);
 		m_netReply->deleteLater();
 	});
 }

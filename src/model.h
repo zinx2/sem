@@ -55,21 +55,26 @@ class Part : public QObject {
 	Q_OBJECT
 		Q_PROPERTY(int no READ no WRITE setNo NOTIFY noChanged)
 		Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+		Q_PROPERTY(bool system READ system WRITE isSystem NOTIFY systemChanged)
 public:
 	int no() const { return m_no; }
 	QString name() const { return m_name; }
+	bool system() const { return m_system; }
 
 	public slots:
 	void setNo(const int m) { m_no = m; }
 	void setName(const QString &m) { m_name = m; emit nameChanged(); }
+	void isSystem(const bool m) { m_system = m; emit systemChanged(); }
 
 signals:
 	void noChanged();
 	void nameChanged();
+	void systemChanged();
 
 private:
 	int m_no = -1;
 	QString m_name;
+	bool m_system = false;
 };
 
 class Employee : public QObject {
@@ -113,6 +118,11 @@ class Model : public QObject {
 		Q_PROPERTY(int scaledItemHeight READ scaledItemHeight WRITE setScaledItemHeight NOTIFY scaledItemHeightChanged)
 		Q_PROPERTY(int itemFixedWidth READ itemFixedWidth WRITE setItemFixedWidth NOTIFY itemFixedWidthChanged)
 		Q_PROPERTY(int itemFixedHeight READ itemFixedHeight WRITE setItemFixedHeight NOTIFY itemFixedHeightChanged)
+
+		Q_PROPERTY(QList<Device*> devices READ devices WRITE setDevices NOTIFY devicesChanged)
+		Q_PROPERTY(QList<Part*> parts READ parts WRITE setParts NOTIFY partsChanged)
+		Q_PROPERTY(QList<Employee*> employees READ employees WRITE setEmployees NOTIFY employeesChanged)
+
 private:
 	Model() { };
 	static Model* m_instance;
@@ -146,7 +156,9 @@ public:
 	int itemFixedHeight() const { return m_itemFixedHeight; }
 
 	public slots:
-	void setProjects(QList<Device*> m) { m_devices = m; }
+	void setDevices(QList<Device*> m) { m_devices.clear(); m_devices = m; emit devicesChanged(); }
+	void setParts(QList<Part*> m) { m_parts.clear();  m_parts = m; emit partsChanged(); }
+	void setEmployees(QList<Employee*> m) { m_employees.clear();  m_employees = m; emit employeesChanged(); }
 	void setMessage(QString m) { m_message = m; emit messageChanged(); }
 	void selectItem(int m) { m_selectedItem = m; emit itemSelected(); }
 	void setPath(QString m) { m_path = m; emit pathChanged(); }
@@ -180,6 +192,10 @@ signals:
 	void scaledItemHeightChanged();
 	void itemFixedWidthChanged();
 	void itemFixedHeightChanged();
+
+	void devicesChanged();
+	void partsChanged();
+	void employeesChanged();
 
 private:
 	QList<Device*> m_devices;

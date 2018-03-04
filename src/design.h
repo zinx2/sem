@@ -15,6 +15,11 @@ public:
 	const QString grary01 = "#eeeeee";
 	const QString blue01 = "#2b78e4";
 	const QString blue02 = "#6fa8dc";
+
+	const QString testColor01 = "#dd4f43";
+	const QString testColor02 = "#ffce44";
+	const QString testColor03 = "#17a05e";
+	const QString testColor04 = "#4c8bf5";
 };
 
 class Design : public QObject {

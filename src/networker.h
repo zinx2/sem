@@ -32,6 +32,9 @@ public:
 	void postDemoAll();
 	void postDemo(int id);
 
+	void getUserList();
+	void getPartList();
+	void getDeviceList(int searchType = 0, int now = 1);
 
 private:
 	QNetworkRequest createRequest(QString suffixUrl);
@@ -42,7 +45,7 @@ private:
 
 	static NetWorker* m_instance;
 	QNetworkReply* m_netReply;
-	Model* m_model = nullptr;
+	Model* m = nullptr;
 	QNetworkAccessManager m_netManager;
 
 	QString receivedMsg;
@@ -50,6 +53,6 @@ private:
 	QMutex m_mtx;
 	QUrlQuery m_queries;
 
-	const QString DOMAIN_NAME = "http://192.168.35.177:8080/";
+	const QString DOMAIN_NAME = "http://smart.e-koreatech.ac.kr";
 };
 
