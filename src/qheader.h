@@ -6,3 +6,4 @@
 #include <QVBoxLayout>
 #include <QPalette>
 #include <QResizeEvent>
+#include <QLineEdit>

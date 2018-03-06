@@ -79,7 +79,6 @@ void NetWorker::getDemoAll()
 		m_netReply->deleteLater();
 	});
 }
-
 void NetWorker::getDemo(int id)
 {
 	requestGET(createRequest("getDemo/" + QString("%1").arg(id)),
@@ -99,7 +98,6 @@ void NetWorker::getDemo(int id)
 
 	});
 }
-
 void NetWorker::postDemoAll()
 {
 	requestPOST(createRequest("postDemoAll"),

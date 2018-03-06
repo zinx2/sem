@@ -52,6 +52,9 @@ WidgetPage::WidgetPage(QWidget *parent) : WWidget(parent)
 	btn4->setText("/sem/getDeviceList");
 	wdTest->layout()->addWidget(btn4);
 
+	QLineEdit* e = new QLineEdit(wdTest);
+	wdTest->layout()->addWidget(e);
+
 	connect(btn1, SIGNAL(clicked()), this, SLOT(test1()));
 	connect(btn2, SIGNAL(clicked()), this, SLOT(test2()));
 	connect(btn3, SIGNAL(clicked()), this, SLOT(test3()));
