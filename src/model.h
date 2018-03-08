@@ -1,5 +1,9 @@
 ﻿#pragma once
 #include "qheader.h"
+#define BTN_DEVICE_LIST "devicelist"
+#define BTN_DEVICE_MANAGE_LIST "devicemanagelist"
+#define BTN_EMPLOYEE_MANAGE_LIST "employeemanagelist"
+
 class Device : public QObject {
 	Q_OBJECT
 		Q_PROPERTY(int no READ no WRITE setNo NOTIFY noChanged)
@@ -156,7 +160,7 @@ public:
 	int itemFixedHeight() const { return m_itemFixedHeight; }
 
 	public slots:
-	void setDevices(QList<Device*> m) { m_devices.clear(); m_devices = m; emit devicesChanged(); }
+    void setDevices(QList<Device*> m) { m_devices.clear(); m_devices = m; emit devicesChanged(); }
 	void setParts(QList<Part*> m) { m_parts.clear();  m_parts = m; emit partsChanged(); }
 	void setEmployees(QList<Employee*> m) { m_employees.clear();  m_employees = m; emit employeesChanged(); }
 	void setMessage(QString m) { m_message = m; emit messageChanged(); }

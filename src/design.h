@@ -20,6 +20,11 @@ public:
 	const QString testColor02 = "#ffce44";
 	const QString testColor03 = "#17a05e";
 	const QString testColor04 = "#4c8bf5";
+	const QString testColor05 = "#364150";
+	const QString testColor06 = "#1caf9a";
+
+	const QString btnSelectedStyle = "color: white; background-color: #1caf9a";
+	const QString btnReleasedStyle = "color: white; background-color: transparent";
 };
 
 class Design : public QObject {
@@ -85,8 +90,8 @@ private:
 	float scaleFactor = 1;
 	int m_widthWindow = MIM_WINDOW_WIDTH;
 	int m_heightWindow = MIM_WINDOW_HEIGHT;
-	int m_widthMenu = m_widthWindow;
-	int m_heightMenu = 50;
+	int m_widthMenu = pt(200);
+	int m_heightMenu = m_heightWindow;
 
 	int m_widthUtil = m_widthWindow;
 	int m_heightUtil = pt(100);

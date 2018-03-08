@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <QObject>
 #include <QThread>
@@ -35,6 +35,8 @@ public:
 	void getUserList();
 	void getPartList();
 	void getDeviceList(int searchType = 0, int now = 1);
+
+	QMutex& mtx() { return m_mtx; }
 
 private:
 	QNetworkRequest createRequest(QString suffixUrl);

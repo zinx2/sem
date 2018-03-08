@@ -1,4 +1,4 @@
-#include "widget_list_managements.h"
+﻿#include "widget_list_managements.h"
 #include "networker.h"
 
 WidgetListManagements::WidgetListManagements(QWidget *parent) : WWidget(parent)
@@ -17,8 +17,6 @@ WidgetListManagements::WidgetListManagements(QWidget *parent) : WWidget(parent)
 	mainWidget->layout()->setMargin(0);
 	connect(d, SIGNAL(widthPageChanged()), this, SLOT(resize()));
 	connect(d, SIGNAL(heightPageChanged()), this, SLOT(resize()));
-
-
 }
 
 void WidgetListManagements::resize()

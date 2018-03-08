@@ -7,3 +7,11 @@
 #include <QPalette>
 #include <QResizeEvent>
 #include <QLineEdit>
+
+#include <QTableView>
+#include <QTableWidget>
+#include <QTableWidgetItem>
+
+#include <QMutex>
+#include <QTextEdit>
+#include <QScrollArea>

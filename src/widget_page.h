@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "wrapped_widget.h"
 
 class WidgetListDevices;
@@ -20,16 +20,22 @@ public:
 	void test2();
 	void test3();
 	void test4();
+	void test5();
 
 	void listDVIces();
 	void listMNGements();
 	void listEMPloyees();
+
+	public slots:
+	void textChanged();
 
 private:
 	QHBoxLayout* mainHBox;
 	WidgetListDevices* wdLDVIces;
 	WidgetListEmployees* wdLEMPloyees;
 	WidgetListManagements* wdLMNGements;
+
+	QTextEdit* textEdit;
 
 	void clearItem();
 };

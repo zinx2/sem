@@ -1,4 +1,4 @@
-#include "widget_page.h"
+﻿#include "widget_page.h"
 #include "networker.h"
 #include "widget_list_devices.h"
 #include "widget_list_employees.h"
@@ -9,7 +9,7 @@ WidgetPage::WidgetPage(QWidget *parent) : WWidget(parent)
 	this->setGeometry(QRect(0, 0, parent->geometry().width(), parent->geometry().height()));
 	mainWidget = new QWidget;
 	mainWidget->setGeometry(this->geometry());
-	mainWidget->setStyleSheet("background-color:" + Design::instance()->c().testColor02);
+	mainWidget->setStyleSheet("background-color:" + Design::instance()->c().testColor03);
 
 	mainVBox = new QVBoxLayout;
 	mainVBox->addWidget(mainWidget);
@@ -21,7 +21,6 @@ WidgetPage::WidgetPage(QWidget *parent) : WWidget(parent)
 	connect(d, SIGNAL(widthPageChanged()), this, SLOT(resize()));
 	connect(d, SIGNAL(heightPageChanged()), this, SLOT(resize()));
 
-	
 	/* TESST */
 	QWidget* wdTest = new QWidget;
 	mainWidget->layout()->addWidget(wdTest);
@@ -52,13 +51,20 @@ WidgetPage::WidgetPage(QWidget *parent) : WWidget(parent)
 	btn4->setText("/sem/getDeviceList");
 	wdTest->layout()->addWidget(btn4);
 
-	QLineEdit* e = new QLineEdit(wdTest);
-	wdTest->layout()->addWidget(e);
+	QPushButton* btn5 = new QPushButton(wdTest);
+	btn5->setFixedSize(100, 40);
+	btn5->setText("REFRESH LIST");
+	wdTest->layout()->addWidget(btn5);
+
+	textEdit = new QTextEdit(wdTest);
+	connect(textEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
+	wdTest->layout()->addWidget(textEdit);
 
 	connect(btn1, SIGNAL(clicked()), this, SLOT(test1()));
 	connect(btn2, SIGNAL(clicked()), this, SLOT(test2()));
 	connect(btn3, SIGNAL(clicked()), this, SLOT(test3()));
 	connect(btn4, SIGNAL(clicked()), this, SLOT(test4()));
+	connect(btn5, SIGNAL(clicked()), this, SLOT(test5()));
 
 	pgWidget = new QWidget;
 	pgWidget->setLayout(new QVBoxLayout);
@@ -68,7 +74,12 @@ WidgetPage::WidgetPage(QWidget *parent) : WWidget(parent)
 	mainWidget->layout()->addWidget(pgWidget);
 	listDVIces();
 }
-
+void WidgetPage::textChanged()
+{
+	QString barcode = textEdit->toPlainText();
+	if(barcode.size() > 0 && barcode.at(barcode.size()-1) == '\n')
+		qDebug() << textEdit->toPlainText();
+}
 void WidgetPage::resize()
 {
 	mainWidget->setFixedWidth(d->widthPage());
@@ -95,6 +106,11 @@ void WidgetPage::test4()
 	NetWorker* n = NetWorker::getInstance();
 	n->getDeviceList(1, 1);
 }
+void WidgetPage::test5()
+{
+	NetWorker* n = NetWorker::getInstance();
+	wdLDVIces->refresh();
+}
 void WidgetPage::listDVIces()
 {
 	qDebug() << "listDVIces";
@@ -116,7 +132,6 @@ void WidgetPage::listEMPloyees()
 	wdLEMPloyees = new WidgetListEmployees(pgWidget);
 	pgWidget->layout()->addWidget(wdLEMPloyees);
 }
-
 void WidgetPage::clearItem()
 {
 	int cnt = pgWidget->layout()->count();

@@ -1,4 +1,4 @@
-#include "widget_list_employees.h"
+﻿#include "widget_list_employees.h"
 #include "networker.h"
 
 WidgetListEmployees::WidgetListEmployees(QWidget *parent) : WWidget(parent)

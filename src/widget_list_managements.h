@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "wrapped_widget.h"
 
 class WidgetListManagements : public WWidget

@@ -4,6 +4,8 @@
 #include "model.h"
 #include "widget_menu.h"
 #include "widget_page.h"
+#include "networker.h"
+#include "command.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -11,10 +13,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	d = Design::instance();
 	this->setMinimumSize(d->MIM_WINDOW_WIDTH, d->MIM_WINDOW_HEIGHT);
-	this->setMaximumSize(d->MAX_WINDOW_WIDTH, d->MAX_WINDOW_HEIGHT);
+	//this->setMaximumSize(d->MAX_WINDOW_WIDTH, d->MAX_WINDOW_HEIGHT);
 	this->setGeometry(QRect(100, 100, d->widthWindow(), d->heightWindow()));
     ui->setupUi(this);
-	
 	frameMenu = ui->widget_menu;
 	framePage = ui->widget_list;
 
@@ -51,7 +52,7 @@ void MainWindow::initializeUI()
 	vBoxMenubar->setMargin(0);
 	vBoxMenubar->addWidget(widgetMenu);
 
-	y += h; w = d->widthPage(); h = d->heightPage(); 
+	x += d->widthMenu(); w = d->widthPage(); h = d->heightPage();
 	setWidget(framePage, QRect(x, y, w, h), d->c().testColor02);
 	widgetPage = new WidgetPage(framePage);
 	QVBoxLayout* vBoxList = new QVBoxLayout(framePage);
@@ -70,16 +71,16 @@ void MainWindow::resize()
 	geo = frameMenu->geometry();
 	x = 0;
 	y = 0;
-	w = d->widthWindow(); d->setWidthMenu(w);
-	h = geo.height();
+	w = geo.width(); // d->widthWindow(); d->setWidthMenu(w);
+	h = d->heightWindow(); d->setHeightMenu(h);//geo.height();
 	frameMenu->setGeometry(x, y, w, h);
 	widgetMenu->setGeometry(0, 0, w, h);
 
 	geo = framePage->geometry();
-	x = 0;
-	y = geo.y();
-	w = d->widthWindow(); d->setWidthPage(w);
-	h = d->heightWindow() - d->heightMenu(); d->setHeightPage(h);
+	x = d->widthMenu();
+	y = 0;
+	w = d->widthWindow() - d->widthMenu(); d->setWidthPage(w);
+	h = d->heightWindow(); d->setHeightPage(h);
 	framePage->setGeometry(x, y, w, h);
 	widgetPage->setGeometry(0, 0, w, h);
 }
@@ -92,9 +93,9 @@ void MainWindow::setWidget(QWidget* w, QRect geometry, QString color)
 
 void MainWindow::connections()
 {
-	disconnect(widgetMenu->btnDeviceList(), SIGNAL(clicked()), this, SLOT(listDVIces()));
-	connect(widgetMenu->btnDeviceManagementList(), SIGNAL(clicked()), this, SLOT(listMNGements()));
-	connect(widgetMenu->btnEmployeeManagementList(), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
+	disconnect(widgetMenu->commandProvider()->command(BTN_DEVICE_LIST), SIGNAL(clicked()), this, SLOT(listDVIces()));
+	connect(widgetMenu->commandProvider()->command(BTN_DEVICE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listMNGements()));
+	connect(widgetMenu->commandProvider()->command(BTN_EMPLOYEE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
 	connect(widgetMenu->btnBorrow(), SIGNAL(clicked()), this, SLOT(doBorrow()));
 	connect(widgetMenu->btnReturn(), SIGNAL(clicked()), this, SLOT(doReturn()));
 }
@@ -102,25 +103,28 @@ void MainWindow::connections()
 void MainWindow::listDVIces()
 {
 	widgetPage->listDVIces();
-	disconnect(widgetMenu->btnDeviceList(), SIGNAL(clicked()), this, SLOT(listDVIces()));
-	connect(widgetMenu->btnDeviceManagementList(), SIGNAL(clicked()), this, SLOT(listMNGements()));
-	connect(widgetMenu->btnEmployeeManagementList(), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
+	widgetMenu->commandProvider()->select(BTN_DEVICE_LIST);
+	disconnect(widgetMenu->commandProvider()->command(BTN_DEVICE_LIST), SIGNAL(clicked()), this, SLOT(listDVIces()));
+	connect(widgetMenu->commandProvider()->command(BTN_DEVICE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listMNGements()));
+	connect(widgetMenu->commandProvider()->command(BTN_EMPLOYEE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
 }
 
 void MainWindow::listMNGements()
 {
 	widgetPage->listMNGements();
-	connect(widgetMenu->btnDeviceList(), SIGNAL(clicked()), this, SLOT(listDVIces()));
-	disconnect(widgetMenu->btnDeviceManagementList(), SIGNAL(clicked()), this, SLOT(listMNGements()));
-	connect(widgetMenu->btnEmployeeManagementList(), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
+	widgetMenu->commandProvider()->select(BTN_DEVICE_MANAGE_LIST);
+	connect(widgetMenu->commandProvider()->command(BTN_DEVICE_LIST), SIGNAL(clicked()), this, SLOT(listDVIces()));
+	disconnect(widgetMenu->commandProvider()->command(BTN_DEVICE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listMNGements()));
+	connect(widgetMenu->commandProvider()->command(BTN_EMPLOYEE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
 }
 
 void MainWindow::listEMPloyees()
 {
 	widgetPage->listEMPloyees();
-	connect(widgetMenu->btnDeviceList(), SIGNAL(clicked()), this, SLOT(listDVIces()));
-	connect(widgetMenu->btnDeviceManagementList(), SIGNAL(clicked()), this, SLOT(listMNGements()));
-	disconnect(widgetMenu->btnEmployeeManagementList(), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
+	widgetMenu->commandProvider()->select(BTN_EMPLOYEE_MANAGE_LIST);
+	connect(widgetMenu->commandProvider()->command(BTN_DEVICE_LIST), SIGNAL(clicked()), this, SLOT(listDVIces()));
+	connect(widgetMenu->commandProvider()->command(BTN_DEVICE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listMNGements()));
+	disconnect(widgetMenu->commandProvider()->command(BTN_EMPLOYEE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
 }
 
 void MainWindow::doBorrow()

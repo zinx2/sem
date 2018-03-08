@@ -1,4 +1,4 @@
-#include "networker.h"
+﻿#include "networker.h"
 #include <QMutexLocker>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -182,6 +182,7 @@ void NetWorker::getUserList()
 
 void NetWorker::getPartList()
 {
+
 	requestPOST(createRequest("/sem/getPartList"),
 		[&]()-> void {
 		QMutexLocker locker(&m_mtx);
@@ -215,6 +216,7 @@ void NetWorker::getPartList()
 
 void NetWorker::getDeviceList(int searchType, int now)
 {
+
 	/********** SET URL QUERIES **********/
 	m_queries.addQueryItem("search_type", QString("%1").arg(searchType));
 	m_queries.addQueryItem("now_page", QString("%1").arg(now));
@@ -239,19 +241,20 @@ void NetWorker::getDeviceList(int searchType, int now)
 		{
 			QJsonObject obj = value.toObject();
 
-			Device d;
-			d.setNo(obj["sem_device_no"].toInt());
-			d.setName(obj["device_name"].toString());
-			d.setAssetNo(obj["asset_no"].toString());
-			d.setBarcode(obj["barcode"].toString());
-			d.setPrice(obj["get_money"].toString());
-			d.setDate(obj["get_date"].toString());
-			d.setMemo(obj["memo"].toString());
-			d.borrow(obj["is_rented"].toInt());
-			qDebug() << d.no() << "/" << d.name() << "/" << d.name() << d.assetNo() << "/" << d.barcode() << "/" << d.price() << "/" << d.date() << "/" << d.memo() << "/" << d.borrowed();
-			list.append(&d);
+			Device *d = new Device();
+			d->setNo(obj["sem_device_no"].toInt());
+			d->setName(obj["device_name"].toString());
+			d->setAssetNo(obj["asset_no"].toString());
+			d->setBarcode(obj["barcode"].toString());
+			d->setPrice(obj["get_money"].toString());
+			d->setDate(obj["get_date"].toString());
+			d->setMemo(obj["memo"].toString());
+			d->borrow(obj["is_rented"].toInt());
+			qDebug() << d->no() << "/" << d->name() << d->assetNo() << "/" << d->barcode() << "/" << d->price() << "/" << d->date() << "/" << d->memo() << "/" << d->borrowed();
+			list.append(d);
 		}
 		m->setDevices(list);
 		m_netReply->deleteLater();
+
 	});
 }
