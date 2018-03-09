@@ -97,7 +97,7 @@ private:
 	int m_heightUtil = pt(100);
 
 	int m_widthPage = m_widthWindow;
-	int m_heightPage = m_heightWindow - m_heightMenu;
+	int m_heightPage = m_heightWindow;
 };
 //extern Design D;
 

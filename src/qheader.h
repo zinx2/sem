@@ -15,3 +15,8 @@
 #include <QMutex>
 #include <QTextEdit>
 #include <QScrollArea>
+
+#include <QMutexLocker>
+#include <QList>
+#include <QHeaderView>
+#include <QScrollBar>

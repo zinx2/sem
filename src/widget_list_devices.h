@@ -10,7 +10,7 @@ public:
 	QVBoxLayout* mainVBox;
 	QWidget* mainWidget;
 	QTableWidget* table = nullptr;
-	QScrollArea* scrollArea;
+	//QScrollArea* scrollArea;
 
 	public slots:
 	void resize();
@@ -18,6 +18,5 @@ public:
 
 private:
 	QHBoxLayout* mainHBox;
-
 	void updateTable();
 };

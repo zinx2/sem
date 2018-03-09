@@ -93,7 +93,7 @@ void MainWindow::setWidget(QWidget* w, QRect geometry, QString color)
 
 void MainWindow::connections()
 {
-	disconnect(widgetMenu->commandProvider()->command(BTN_DEVICE_LIST), SIGNAL(clicked()), this, SLOT(listDVIces()));
+	connect(widgetMenu->commandProvider()->command(BTN_DEVICE_LIST), SIGNAL(clicked()), this, SLOT(listDVIces()));
 	connect(widgetMenu->commandProvider()->command(BTN_DEVICE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listMNGements()));
 	connect(widgetMenu->commandProvider()->command(BTN_EMPLOYEE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
 	connect(widgetMenu->btnBorrow(), SIGNAL(clicked()), this, SLOT(doBorrow()));
@@ -104,27 +104,27 @@ void MainWindow::listDVIces()
 {
 	widgetPage->listDVIces();
 	widgetMenu->commandProvider()->select(BTN_DEVICE_LIST);
-	disconnect(widgetMenu->commandProvider()->command(BTN_DEVICE_LIST), SIGNAL(clicked()), this, SLOT(listDVIces()));
-	connect(widgetMenu->commandProvider()->command(BTN_DEVICE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listMNGements()));
-	connect(widgetMenu->commandProvider()->command(BTN_EMPLOYEE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
+	//connect(widgetMenu->commandProvider()->command(BTN_DEVICE_LIST), SIGNAL(clicked()), this, SLOT(listDVIces()));
+	//connect(widgetMenu->commandProvider()->command(BTN_DEVICE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listMNGements()));
+	//connect(widgetMenu->commandProvider()->command(BTN_EMPLOYEE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
 }
 
 void MainWindow::listMNGements()
 {
 	widgetPage->listMNGements();
 	widgetMenu->commandProvider()->select(BTN_DEVICE_MANAGE_LIST);
-	connect(widgetMenu->commandProvider()->command(BTN_DEVICE_LIST), SIGNAL(clicked()), this, SLOT(listDVIces()));
-	disconnect(widgetMenu->commandProvider()->command(BTN_DEVICE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listMNGements()));
-	connect(widgetMenu->commandProvider()->command(BTN_EMPLOYEE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
+	//connect(widgetMenu->commandProvider()->command(BTN_DEVICE_LIST), SIGNAL(clicked()), this, SLOT(listDVIces()));
+	//connect(widgetMenu->commandProvider()->command(BTN_DEVICE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listMNGements()));
+	//connect(widgetMenu->commandProvider()->command(BTN_EMPLOYEE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
 }
 
 void MainWindow::listEMPloyees()
 {
 	widgetPage->listEMPloyees();
 	widgetMenu->commandProvider()->select(BTN_EMPLOYEE_MANAGE_LIST);
-	connect(widgetMenu->commandProvider()->command(BTN_DEVICE_LIST), SIGNAL(clicked()), this, SLOT(listDVIces()));
-	connect(widgetMenu->commandProvider()->command(BTN_DEVICE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listMNGements()));
-	disconnect(widgetMenu->commandProvider()->command(BTN_EMPLOYEE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
+	//connect(widgetMenu->commandProvider()->command(BTN_DEVICE_LIST), SIGNAL(clicked()), this, SLOT(listDVIces()));
+	//connect(widgetMenu->commandProvider()->command(BTN_DEVICE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listMNGements()));
+	//connect(widgetMenu->commandProvider()->command(BTN_EMPLOYEE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
 }
 
 void MainWindow::doBorrow()

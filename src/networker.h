@@ -35,6 +35,7 @@ public:
 	void getUserList();
 	void getPartList();
 	void getDeviceList(int searchType = 0, int now = 1);
+	void getRentList(int now = 1);
 
 	QMutex& mtx() { return m_mtx; }
 

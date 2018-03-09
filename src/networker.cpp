@@ -165,15 +165,17 @@ void NetWorker::getUserList()
 
 		QList<Employee*> list;
 		QJsonArray jsonArr = jsonObj["data_list"].toArray();
+		int no = 1;
 		foreach(const QJsonValue &value, jsonArr)
 		{
 			QJsonObject obj = value.toObject();
 
-			Employee d; 
-			d.setNo(obj["sem_user_no"].toInt());
-			d.setName(obj["sem_user_name"].toString());
-			qDebug() << d.no() << "/" << d.name();
-			list.append(&d);
+			Employee* d = new Employee(); 
+			d->setNoUser(obj["sem_user_no"].toInt());
+			d->setNameUser(obj["sem_user_name"].toString());
+			d->isManager(obj["sem_is_admin"].toBool());
+			qDebug() << d->noUser() << "/" << d->nameUser() << "/" << d->manager();
+			list.append(d);
 		}
 		m->setEmployees(list);
 		m_netReply->deleteLater();
@@ -202,12 +204,12 @@ void NetWorker::getPartList()
 		{
 			QJsonObject obj = value.toObject();
 
-			Part d;
-			d.setNo(obj["part_no"].toInt());
-			d.setName(obj["part_name"].toString());
-			d.isSystem(obj["is_system_part"].toBool());
-			qDebug() << d.no() << "/" << d.name() << "/" << d.system();
-			list.append(&d);
+			Part* d = new Part();
+			d->setNoPart(obj["part_no"].toInt());
+			d->setNamePart(obj["part_name"].toString());
+			d->isSystem(obj["is_system_part"].toBool());
+			qDebug() << d->noPart() << "/" << d->namePart() << "/" << d->system();
+			list.append(d);
 		}
 		m->setParts(list);
 		m_netReply->deleteLater();
@@ -242,18 +244,63 @@ void NetWorker::getDeviceList(int searchType, int now)
 			QJsonObject obj = value.toObject();
 
 			Device *d = new Device();
-			d->setNo(obj["sem_device_no"].toInt());
-			d->setName(obj["device_name"].toString());
-			d->setAssetNo(obj["asset_no"].toString());
+			d->setNoDevice(obj["sem_device_no"].toInt());
+			d->setNameDevice(obj["device_name"].toString());
+			d->setNoAsset(obj["asset_no"].toString());
 			d->setBarcode(obj["barcode"].toString());
 			d->setPrice(obj["get_money"].toString());
-			d->setDate(obj["get_date"].toString());
+			d->setDateTaked(obj["get_date"].toString());
 			d->setMemo(obj["memo"].toString());
 			d->borrow(obj["is_rented"].toInt());
-			qDebug() << d->no() << "/" << d->name() << d->assetNo() << "/" << d->barcode() << "/" << d->price() << "/" << d->date() << "/" << d->memo() << "/" << d->borrowed();
+			qDebug() << d->noDevice() << "/" << d->nameDevice() << d->noAsset() << "/" << d->barcode() << "/" << d->price() << "/" << d->dateTaked() << "/" << d->memo() << "/" << d->borrowed();
 			list.append(d);
 		}
 		m->setDevices(list);
+		m_netReply->deleteLater();
+
+	});
+}
+
+void NetWorker::getRentList(int now)
+{
+	/********** SET URL QUERIES **********/
+	m_queries.addQueryItem("now_page", QString("%1").arg(now));
+
+	requestPOST(createRequest("/sem/getRentList"),
+		[&]()-> void {
+		QMutexLocker locker(&m_mtx);
+
+		QJsonDocument jsonDoc = QJsonDocument::fromJson(m_netReply->readAll());
+		QJsonObject jsonObj = jsonDoc.object();
+		bool isSuccess = jsonObj["is_success"].toBool();
+
+		if (!isSuccess) {
+			m_netReply->deleteLater();
+			return;
+		}
+		int totalPage = jsonObj["total_page"].toInt();
+
+		QList<Rent*> list;
+		QJsonArray jsonArr = jsonObj["data_list"].toArray();
+		foreach(const QJsonValue &value, jsonArr)
+		{
+			QJsonObject obj = value.toObject();
+			Rent *d = new Rent();
+			d->setNoRent(obj["rent_no"].toInt());
+			d->setNameUser(obj["sem_user_name"].toString());
+			d->setNoDevice(obj["sem_device_no"].toInt());
+			d->setNameDevice(obj["device_name"].toString());
+			d->setNoAsset(obj["asset_no"].toString());
+			d->setDateBorrowed(obj["rent_date"].toString());
+			d->setDateReturned(obj["return_date"].toString());
+			d->setSignUser(obj["signature"].toString());
+			d->complete(obj["is_complete"].toInt());
+			d->setNameAdmin(obj["confirm_user_name"].toString());
+			d->setSignAdmin(obj["confirm_signature"].toString());
+			qDebug() << d->noRent() << "/" << d->nameUser();
+			list.append(d);
+		}
+		m->setRents(list);
 		m_netReply->deleteLater();
 
 	});

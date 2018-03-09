@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "qheader.h"
 #include "design.h"
 class Command : public QPushButton

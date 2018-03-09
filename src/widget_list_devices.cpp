@@ -1,34 +1,24 @@
 ﻿#include "widget_list_devices.h"
 #include "networker.h"
-#include <QMutexLocker>
-#include <QList>
-#include <QHeaderView>
+#include "qheader.h"
 WidgetListDevices::WidgetListDevices(QWidget *parent) : WWidget(parent)
 {
 	NetWorker* n = NetWorker::getInstance();
 	n->getDeviceList();
-	//this->setGeometry(QRect(0, 0, parent->geometry().width(), parent->geometry().height()));
+	
 	this->setGeometry(parent->geometry());
 	this->setLayout(new QVBoxLayout(this));
-
-	refresh();
+	this->layout()->setMargin(0);
 
 	mainWidget = new QWidget(this);
-	mainWidget->setGeometry(this->geometry());
-	mainWidget->setStyleSheet("background-color:" + Design::instance()->c().testColor01);
+	mainWidget->setFixedWidth(d->widthPage());
+	mainWidget->setFixedHeight(d->heightPage());
+	mainWidget->setStyleSheet("background-color:" + Design::instance()->c().testColor02);
 	mainWidget->setLayout(new QVBoxLayout);
 	mainWidget->layout()->setMargin(0);
-	
-	scrollArea = new QScrollArea(this);
-	scrollArea->setBackgroundRole(QPalette::Dark);
-	this->layout()->addWidget(scrollArea);	
-	mainWidget->layout()->addWidget(table);
-	scrollArea->setWidget(mainWidget);
 
-	//mainWidget->setFixedSize(parent->size());
-	
-	
-
+	this->layout()->addWidget(mainWidget);
+	refresh();
 
 	connect(d, SIGNAL(widthPageChanged()), this, SLOT(resize()));
 	connect(d, SIGNAL(heightPageChanged()), this, SLOT(resize()));
@@ -36,69 +26,75 @@ WidgetListDevices::WidgetListDevices(QWidget *parent) : WWidget(parent)
 }
 void WidgetListDevices::updateTable()
 {
+	qDebug() << d->widthPage() << "/" << d->heightPage();
 	table->setFixedSize(d->widthPage(), d->heightPage());
-	table->setColumnWidth(0, table->width() * 0.15);
-	table->setColumnWidth(1, table->width() * 0.20);
+	table->setColumnWidth(0, table->width() * 0.05);
+	table->setColumnWidth(1, table->width() * 0.15);
 	table->setColumnWidth(2, table->width() * 0.15);
-	table->setColumnWidth(3, table->width() * 0.13);
-	table->setColumnWidth(4, table->width() * 0.07);
-	table->setColumnWidth(5, table->width() * 0.30);
+	table->setColumnWidth(3, table->width() * 0.15);
+	table->setColumnWidth(4, table->width() * 0.13);
+	table->setColumnWidth(5, table->width() * 0.07);
+	table->setColumnWidth(6, table->width() * 0.30);
 }
 void WidgetListDevices::refresh()
 {
-
-
-	//if (table != nullptr)
-	//	scrollArea->layout
-	//	mainWidget->layout()->removeWidget(table);
 	int cnt = m->countDevice();
 	if (cnt <= 0) return;
 
+	if (table != nullptr)
+		mainWidget->layout()->removeWidget(table);
+
+	int columnCount = 7;
 	QStringList tableHeader;
-	tableHeader << "자산번호" << "장비명" << "취득금액" << "취득일자" << "대출여부" << "비교";
-	table = new QTableWidget(m->countDevice(), 6);
+	tableHeader << "번호" << "자산번호" << "장비명" << "취득금액" << "취득일자" << "대출여부" << "비교";
+	table = new QTableWidget(m->countDevice(), columnCount, this);
 	table->setSelectionBehavior(QAbstractItemView::SelectRows);
 	table->setSelectionMode(QAbstractItemView::SingleSelection);
+	table->setFixedSize(d->widthPage(), d->heightPage());
+	table->horizontalScrollBar()->setDisabled(true);
+	table->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	updateTable();
 	table->setHorizontalHeaderLabels(tableHeader);
 	table->verticalHeader()->hide();
-	table->setGeometry(this->geometry());
-
 
 	for (int row = 0; row < cnt; row++)
 	{
 		Device* dv = m->devices().at(row);
-		QTableWidgetItem* item1 = new QTableWidgetItem(QString("%1").arg(dv->assetNo()));
-		item1->setTextAlignment(Qt::AlignCenter);
-		table->setItem(row, 0, item1);
 
-		QTableWidgetItem* item2 = new QTableWidgetItem(dv->name());
+		QTableWidgetItem* item0 = new QTableWidgetItem(QString("%1").arg(row+1));
+		item0->setTextAlignment(Qt::AlignCenter);
+		table->setItem(row, 0, item0);
+
+		QTableWidgetItem* item1 = new QTableWidgetItem(QString("%1").arg(dv->noAsset()));
+		item1->setTextAlignment(Qt::AlignCenter);
+		table->setItem(row, 1, item1);
+
+		QTableWidgetItem* item2 = new QTableWidgetItem(dv->nameDevice());
 		item2->setTextAlignment(Qt::AlignCenter);
-		table->setItem(row, 1, item2);
+		table->setItem(row, 2, item2);
 
 		QTableWidgetItem* item3 = new QTableWidgetItem(dv->price());
 		item3->setTextAlignment(Qt::AlignCenter);
-		table->setItem(row, 2, item3);
+		table->setItem(row, 3, item3);
 
-		QTableWidgetItem* item4 = new QTableWidgetItem(dv->date());
+		QTableWidgetItem* item4 = new QTableWidgetItem(dv->dateTaked());
 		item4->setTextAlignment(Qt::AlignCenter);
-		table->setItem(row, 3, item4);
+		table->setItem(row, 4, item4);
 
 		QTableWidgetItem* item5 = new QTableWidgetItem(dv->borrowed() ? "O" : "X");
 		item5->setTextAlignment(Qt::AlignCenter);
-		table->setItem(row, 4, item5);
+		table->setItem(row, 5, item5);
 
-		QTableWidgetItem* item6 = new QTableWidgetItem(dv->name());
+		QTableWidgetItem* item6 = new QTableWidgetItem(dv->nameDevice());
 		item6->setTextAlignment(Qt::AlignCenter);
-		table->setItem(row, 5, item6);
+		table->setItem(row, 6, item6);
 	}	
-	//mainWidget->layout()->addWidget(table);
-	//scrollArea->setWidget(imageLabel);
+	mainWidget->layout()->addWidget(table);
 	update();
 }
 void WidgetListDevices::resize()
 {
-	scrollArea->setFixedWidth(d->widthPage());
-	scrollArea->setFixedHeight(d->heightPage());
+	mainWidget->setFixedWidth(d->widthPage());
+	mainWidget->setFixedHeight(d->heightPage());
 	if (table != nullptr) updateTable();
 }
