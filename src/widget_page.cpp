@@ -22,15 +22,15 @@ WidgetPage::WidgetPage(QWidget *parent) : WWidget(parent)
 	connect(d, SIGNAL(heightPageChanged()), this, SLOT(resize()));
 
 	/* TESST */
-	//QWidget* wdTest = new QWidget;
-	//mainWidget->layout()->addWidget(wdTest);
-	//QHBoxLayout* lyTest = new QHBoxLayout;
-	//wdTest->setLayout(lyTest);
-	//wdTest->setFixedHeight(50);
-	//wdTest->layout()->setSpacing(0);
-	//wdTest->layout()->setAlignment(Qt::AlignLeft|Qt::AlignTop);
+	QWidget* wdTest = new QWidget;
+	mainWidget->layout()->addWidget(wdTest);
+	QHBoxLayout* lyTest = new QHBoxLayout;
+	wdTest->setLayout(lyTest);
+	wdTest->setFixedHeight(50);
+	wdTest->layout()->setSpacing(0);
+	wdTest->layout()->setAlignment(Qt::AlignLeft|Qt::AlignTop);
 
-	/*QPushButton* btn1 = new QPushButton(wdTest);
+	QPushButton* btn1 = new QPushButton(wdTest);
 	btn1->setFixedSize(100, 40);
 	btn1->setText("/sem/getUserList");
 	wdTest->layout()->addWidget(btn1);
@@ -58,13 +58,13 @@ WidgetPage::WidgetPage(QWidget *parent) : WWidget(parent)
 
 	textEdit = new QTextEdit(wdTest);
 	connect(textEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
-	wdTest->layout()->addWidget(textEdit);*/
+	wdTest->layout()->addWidget(textEdit);
 
-	//connect(btn1, SIGNAL(clicked()), this, SLOT(test1()));
-	//connect(btn2, SIGNAL(clicked()), this, SLOT(test2()));
-	//connect(btn3, SIGNAL(clicked()), this, SLOT(test3()));
-	//connect(btn4, SIGNAL(clicked()), this, SLOT(test4()));
-	//connect(btn5, SIGNAL(clicked()), this, SLOT(test5()));
+	connect(btn1, SIGNAL(clicked()), this, SLOT(test1()));
+	connect(btn2, SIGNAL(clicked()), this, SLOT(test2()));
+	connect(btn3, SIGNAL(clicked()), this, SLOT(test3()));
+	connect(btn4, SIGNAL(clicked()), this, SLOT(test4()));
+	connect(btn5, SIGNAL(clicked()), this, SLOT(test5()));
 
 	pgWidget = new QWidget(this);
 	pgWidget->setLayout(new QVBoxLayout);
@@ -73,6 +73,8 @@ WidgetPage::WidgetPage(QWidget *parent) : WWidget(parent)
 	pgWidget->layout()->setContentsMargins(0, 0, 0, 0);
 	mainWidget->layout()->addWidget(pgWidget);
 	listDVIces();
+
+	connect(m, SIGNAL(modalChanged()), this, SLOT(modal()));
 }
 void WidgetPage::textChanged()
 {
@@ -93,6 +95,7 @@ void WidgetPage::test1()
 {
 	NetWorker* n = NetWorker::getInstance();
 	n->getUserList();
+	n->getPartList();
 }
 void WidgetPage::test2()
 {
@@ -146,4 +149,9 @@ void WidgetPage::clearItem()
 		delete w;
 		pgWidget->layout()->removeItem(it);
 	}
+}
+
+void WidgetPage::modal()
+{
+	setEnabled(!m->modal());
 }

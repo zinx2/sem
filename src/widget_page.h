@@ -15,6 +15,7 @@ public:
 	QWidget* pgWidget;
 	public slots:
 	void resize();
+	void modal();
 
 	void test1();
 	void test2();

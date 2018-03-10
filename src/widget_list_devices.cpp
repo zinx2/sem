@@ -4,8 +4,10 @@
 WidgetListDevices::WidgetListDevices(QWidget *parent) : WWidget(parent)
 {
 	NetWorker* n = NetWorker::getInstance();
-	n->getDeviceList();
+	n->getDeviceList()->request();;
 	
+
+
 	this->setGeometry(parent->geometry());
 	this->setLayout(new QVBoxLayout(this));
 	this->layout()->setMargin(0);
@@ -23,6 +25,7 @@ WidgetListDevices::WidgetListDevices(QWidget *parent) : WWidget(parent)
 	connect(d, SIGNAL(widthPageChanged()), this, SLOT(resize()));
 	connect(d, SIGNAL(heightPageChanged()), this, SLOT(resize()));
 	connect(m, SIGNAL(devicesChanged()), this, SLOT(refresh()));
+
 }
 void WidgetListDevices::updateTable()
 {

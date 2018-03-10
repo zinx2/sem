@@ -6,7 +6,7 @@
 #include "widget_page.h"
 #include "networker.h"
 #include "command.h"
-
+#include "dialog_sign.h"
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -51,6 +51,7 @@ void MainWindow::initializeUI()
 	QVBoxLayout* vBoxMenubar = new QVBoxLayout(frameMenu);
 	vBoxMenubar->setMargin(0);
 	vBoxMenubar->addWidget(widgetMenu);
+	connect(widgetMenu, SIGNAL(onSign()), this, SLOT(sign()));
 
 	x += d->widthMenu(); w = d->widthPage(); h = d->heightPage();
 	setWidget(framePage, QRect(x, y, w, h), d->c().testColor02);
@@ -135,4 +136,13 @@ void MainWindow::doBorrow()
 void MainWindow::doReturn()
 {
 
+}
+
+void MainWindow::sign()
+{
+	m->setModal(true);
+	DialogSign* dg = new DialogSign(this);
+	dg->show();
+
+	
 }

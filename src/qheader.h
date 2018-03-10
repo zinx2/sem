@@ -20,3 +20,9 @@
 #include <QList>
 #include <QHeaderView>
 #include <QScrollBar>
+
+#include <QDialog>
+#include <QLabel>
+
+#include <QGraphicsView>
+#include <QDir>

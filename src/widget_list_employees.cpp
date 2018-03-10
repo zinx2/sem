@@ -6,7 +6,7 @@ WidgetListEmployees::WidgetListEmployees(QWidget *parent) : WWidget(parent)
 {
 	m_commandProvider = new CommandProvider();
 	NetWorker* n = NetWorker::getInstance();
-	n->getUserList();
+	n->getUserList()->request();
 
 	this->setGeometry(parent->geometry());
 	this->setLayout(new QVBoxLayout(this));

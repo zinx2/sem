@@ -184,6 +184,7 @@ class Model : public QObject {
 		Q_PROPERTY(QString date READ date WRITE setDate NOTIFY dateChanged)
 		Q_PROPERTY(bool full READ full WRITE setFull NOTIFY fullChanged)
 		Q_PROPERTY(bool pressedCtrl READ pressedCtrl WRITE pressCtrl NOTIFY pressedCtrlChanged)
+		Q_PROPERTY(bool modal READ modal WRITE setModal NOTIFY modalChanged)
 		Q_PROPERTY(qreal scale READ scale WRITE setScale NOTIFY scaleChanged)
 		Q_PROPERTY(int scaledItemWidth READ scaledItemWidth WRITE setScaledItemWidth NOTIFY scaledItemWidthChanged)
 		Q_PROPERTY(int scaledItemHeight READ scaledItemHeight WRITE setScaledItemHeight NOTIFY scaledItemHeightChanged)
@@ -224,6 +225,7 @@ public:
 	QString date() const { return m_date; }
 	bool full() const { return m_full; }
 	bool pressedCtrl() const { return m_pressedCtrl; }
+	bool modal() const { return m_modal; }
 	qreal scale() const { return m_scale; }
 	int scaledItemWidth() const { return m_scaledItemWidth; }
 	int scaledItemHeight() const { return m_scaledItemHeight; }
@@ -243,6 +245,7 @@ public:
 	void setDate(QString m) { m_date = m; emit dateChanged(); }
 	void setFull(bool m) { m_full = m; emit fullChanged(); }
 	void pressCtrl(bool m) { m_pressedCtrl = m; emit pressedCtrlChanged(); }
+	void setModal(bool m) { m_modal = m; emit modalChanged(); }
 	void setScale(qreal m) { m_scale = m; emit scaleChanged(); }
 	void setScaledItemWidth(int m) { m_scaledItemWidth = m; emit scaledItemWidthChanged(); }
 	void setScaledItemHeight(int m) { m_scaledItemHeight = m; emit scaledItemHeightChanged(); }
@@ -263,6 +266,7 @@ signals:
 	void zoomOut();
 	void fullChanged();
 	void pressedCtrlChanged();
+	void modalChanged();
 	void scaleChanged();
 	void scaledItemWidthChanged();
 	void scaledItemHeightChanged();
@@ -287,6 +291,7 @@ private:
 	QString m_date;
 	bool m_full = false;
 	bool m_pressedCtrl = false;
+	bool m_modal = false;
 	qreal m_scale = 1;
 	int m_scaledItemWidth = 720;
 	int m_scaledItemHeight = 1080;

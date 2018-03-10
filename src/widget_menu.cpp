@@ -1,5 +1,6 @@
 ﻿#include "widget_menu.h"
 #include "command.h"
+
 WidgetMenu::WidgetMenu(QWidget *parent) : WWidget(parent)
 {
 	m_commandProvider = new CommandProvider();
@@ -48,15 +49,31 @@ WidgetMenu::WidgetMenu(QWidget *parent) : WWidget(parent)
 	m_btnReturn = new Command("return", "반납하기", btnWidth, 40);
 	mainWidget2->layout()->addWidget(m_btnReturn);
 
+	m_btnSign = new Command("sign", "사인하기", btnWidth, 40);
+	mainWidget2->layout()->addWidget(m_btnSign);
+	connect(m_btnSign, SIGNAL(clicked()), this, SLOT(sign()));
+
 	m_commandProvider->select(BTN_DEVICE_LIST);
 	connect(d, SIGNAL(widthMenuChanged()), this, SLOT(resize()));
+
+	connect(m, SIGNAL(modalChanged()), this, SLOT(modal()));
+
+	
 }
-
-
 
 void WidgetMenu::resize()
 {
     qDebug() << "width: " << d->widthMenu();
 	mainWidget1->setFixedWidth(d->widthMenu() - 200);
 	mainWidget2->setGeometry(d->widthMenu() - 200, 0, 200, d->heightMenu());
+}
+
+void WidgetMenu::modal()
+{
+	setEnabled(!m->modal());
+}
+
+void WidgetMenu::sign()
+{
+	emit onSign();
 }

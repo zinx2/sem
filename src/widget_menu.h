@@ -15,6 +15,11 @@ public:
 
 	public slots:
 	void resize();
+	void modal();
+	void sign();
+
+signals:
+	void onSign();
 
 private:
 	int btnWidth = 0;
@@ -25,6 +30,7 @@ private:
 
 	Command* m_btnBorrow;
 	Command* m_btnReturn;
+	Command* m_btnSign;
 
 	CommandProvider* m_commandProvider;
 };

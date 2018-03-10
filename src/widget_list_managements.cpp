@@ -4,7 +4,7 @@
 WidgetListManagements::WidgetListManagements(QWidget *parent) : WWidget(parent)
 {
 	NetWorker* n = NetWorker::getInstance();
-	n->getRentList();
+	n->getRentList()->request();
 
 	this->setGeometry(parent->geometry());
 	this->setLayout(new QVBoxLayout(this));

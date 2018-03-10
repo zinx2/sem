@@ -24,6 +24,7 @@ public:
 	void listEMPloyees();
 	void doBorrow();
 	void doReturn();
+	void sign();
 
 protected:
 	void resizeEvent(QResizeEvent *event) override;
