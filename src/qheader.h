@@ -24,5 +24,9 @@
 #include <QDialog>
 #include <QLabel>
 
-#include <QGraphicsView>
 #include <QDir>
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include <QGraphicsEllipseItem>
+#include <QMouseEvent>
+#include <QGraphicsSceneMouseEvent>

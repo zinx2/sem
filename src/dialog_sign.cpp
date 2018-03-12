@@ -1,4 +1,3 @@
-#include "dialog_sign.h"
 #include "qheader.h"
 #include "command.h"
 #include "model.h"

@@ -6,7 +6,8 @@
 #include "widget_page.h"
 #include "networker.h"
 #include "command.h"
-#include "dialog_sign.h"
+#include "sign_zone.h"
+#include "widget_dialog_alarm.h"
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -141,8 +142,9 @@ void MainWindow::doReturn()
 void MainWindow::sign()
 {
 	m->setModal(true);
-	DialogSign* dg = new DialogSign(this);
-	dg->show();
+	/*DialogSign* dg = new DialogSign(this);
+	dg->show();*/
 
-	
+	WidgetDialogAlarm* dg = new WidgetDialogAlarm("알림", 300, 300, this);
+	dg->show();
 }
