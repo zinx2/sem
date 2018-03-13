@@ -28,6 +28,7 @@ public:
 
 protected:
 	void resizeEvent(QResizeEvent *event) override;
+
 private:
 	bool initedUI = false;
 	Design* d;

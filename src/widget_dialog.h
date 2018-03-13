@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "qheader.h"
 
 
@@ -8,10 +8,6 @@ class WidgetDialog : public QDialog
 	Q_OBJECT
 public:
 	explicit WidgetDialog(QString title, int width, int height, QWidget *parent = 0);
-
-	public slots:
-	void reject();
-	void aceept();
 
 protected:
 	QWidget* m_wdContents;

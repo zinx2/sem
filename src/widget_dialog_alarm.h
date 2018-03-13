@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "qheader.h"
 #include "widget_dialog.h"
 

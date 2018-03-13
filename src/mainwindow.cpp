@@ -8,13 +8,14 @@
 #include "command.h"
 #include "sign_zone.h"
 #include "widget_dialog_alarm.h"
+#include "widget_dialog_signature.h"
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+	
 	d = Design::instance();
 	this->setMinimumSize(d->MIM_WINDOW_WIDTH, d->MIM_WINDOW_HEIGHT);
-	//this->setMaximumSize(d->MAX_WINDOW_WIDTH, d->MAX_WINDOW_HEIGHT);
 	this->setGeometry(QRect(100, 100, d->widthWindow(), d->heightWindow()));
     ui->setupUi(this);
 	frameMenu = ui->widget_menu;
@@ -30,6 +31,7 @@ MainWindow::~MainWindow()
 }
 void MainWindow::resizeEvent(QResizeEvent *e)
 {
+
 	if (!initedUI) {
 		initializeUI();
 		return;
@@ -131,23 +133,17 @@ void MainWindow::listEMPloyees()
 
 void MainWindow::doBorrow()
 {
-	QMessageBox::StandardButton resBtn = QMessageBox::question(this, "알림",
-		tr("Are you sure?\nAre you sure?\nAre you sure?\nAre you sure234234?\n"),
-		QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes,
-		QMessageBox::Yes);
 
-	if (resBtn == QMessageBox::Yes) {
-		qDebug() << "YES";
-	}
-
-	if (resBtn == QMessageBox::No || resBtn == QMessageBox::Cancel) {
-		m->setModal(false);
-	}
+	WidgetDialogSignature* wddSignature = new WidgetDialogSignature(0, "대출하기", 500, 500, this);
+	wddSignature->show();
+	m->setModal(true);
 }
 
 void MainWindow::doReturn()
 {
-
+    WidgetDialogSignature* wddSignature = new WidgetDialogSignature(1, "반납하기", 500, 500, this);
+    wddSignature->show();
+	m->setModal(true);
 }
 
 void MainWindow::sign()

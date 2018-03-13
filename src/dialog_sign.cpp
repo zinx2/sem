@@ -1,4 +1,4 @@
-#include "qheader.h"
+ï»¿#include "qheader.h"
 #include "command.h"
 #include "model.h"
 #include "sign_zone.h"
@@ -13,7 +13,7 @@ DialogSign::DialogSign(QWidget *parent) : QDialog(parent)
 	layout()->setSpacing(10);
 
 	QLabel* lb = new QLabel(this);
-	lb->setText("¼­¸íÀ» ÇØÁÖ¼¼¿ä.");
+	lb->setText("ì„œëª…ì„ í•´ì£¼ì„¸ìš”.");
 	layout()->addWidget(lb);
 
 	QWidget* zoneSign = new QWidget(this);
@@ -30,9 +30,9 @@ DialogSign::DialogSign(QWidget *parent) : QDialog(parent)
 	zoneBtn->setLayout(new QHBoxLayout(this));
 	layout()->addWidget(zoneBtn);
 	
-	Command* cmdConfirm = new Command("confirm", "È®ÀÎ", 235, 45);
+	Command* cmdConfirm = new Command("confirm", "í™•ì¸", 235, 45);
 	zoneBtn->layout()->addWidget(cmdConfirm);
-	Command* cmdCancel = new Command("cancel", "Ãë¼Ò", 235, 45);
+	Command* cmdCancel = new Command("cancel", "ì·¨ì†Œ", 235, 45);
 	zoneBtn->layout()->addWidget(cmdCancel);
 	zoneBtn->layout()->setAlignment(Qt::AlignCenter);
 	zoneBtn->setContentsMargins(0, 0, 0, 0);

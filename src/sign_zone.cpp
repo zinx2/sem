@@ -1,4 +1,4 @@
-#include "sign_zone.h"
+ï»¿#include "sign_zone.h"
 #include "command.h"
 #include "model.h"
 #include "networker.h"
@@ -6,13 +6,13 @@
 SignZone::SignZone(QWidget *parent)  : QGraphicsView(parent)
 {
 
-	int width = parent->width() - horizontalScrollBar()->height();
-	int height = parent->height() - verticalScrollBar()->width();
+	int width = parent->width();// -horizontalScrollBar()->height();
+	int height = parent->height();// -verticalScrollBar()->width();
 	setFixedWidth(width); setFixedHeight(height);
 	setScene(new PaintScene(width, height, this));
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	setStyleSheet("background: white; border: 1px solid black");
+	setStyleSheet("background: white; border: 1px solid #7a7a7a");
 	setContentsMargins(0, 0, 0, 0);
 }
 bool SignZone::toImage()
@@ -63,7 +63,7 @@ DialogSign::DialogSign(QWidget *parent) : QDialog(parent)
 	layout()->setSpacing(10);
 
 	QLabel* lb = new QLabel(this);
-	lb->setText("¼­¸íÀ» ÇØÁÖ¼¼¿ä.");
+	lb->setText("ì„œëª…ì„ í•´ì£¼ì„¸ìš”.");
 	layout()->addWidget(lb);
 
 	QWidget* zoneSign = new QWidget(this);
@@ -92,9 +92,9 @@ DialogSign::DialogSign(QWidget *parent) : QDialog(parent)
 	//zoneBtn->setLayout(new QHBoxLayout(this));
 	//layout()->addWidget(zoneBtn);
 
-	//Command* cmdConfirm = new Command("confirm", "È®ÀÎ", 235, 45);
+	//Command* cmdConfirm = new Command("confirm", "í™•ì¸", 235, 45);
 	//zoneBtn->layout()->addWidget(cmdConfirm);
-	//Command* cmdCancel = new Command("cancel", "Ãë¼Ò", 235, 45);
+	//Command* cmdCancel = new Command("cancel", "ì·¨ì†Œ", 235, 45);
 	//zoneBtn->layout()->addWidget(cmdCancel);
 	//zoneBtn->layout()->setAlignment(Qt::AlignCenter);
 	//zoneBtn->setContentsMargins(0, 0, 0, 0);

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "qheader.h"
 
 #define WIDTH_SIGN_ZONE 480

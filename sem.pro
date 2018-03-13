@@ -33,6 +33,11 @@ SOURCES += \
         src/widget_list_devices.cpp \
         src/widget_list_employees.cpp \
         src/widget_list_managements.cpp \
+        src/widget_dialog.cpp \
+        src/widget_dialog_alarm.cpp \
+        src/widget_dialog_signature.cpp \
+        src/commander.cpp \
+        src/sign_zone.cpp
 
 
 HEADERS += \
@@ -41,13 +46,17 @@ HEADERS += \
         src/model.h \
         src/qheader.h \
         src/networker.h \
+        src/sign_zone.h \
         src/widget_menu.h \
         src/wrapped_widget.h \
         src/widget_page.h \
         src/widget_list_devices.h \
         src/widget_list_employees.h \
         src/widget_list_managements.h \
-
+        src/widget_dialog.h \
+        src/widget_dialog_alarm.h \
+        src/widget_dialog_signature.h \
+        src/commander.h
 
 FORMS += \
         mainwindow.ui

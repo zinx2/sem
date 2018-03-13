@@ -32,3 +32,4 @@
 #include <QGraphicsSceneMouseEvent>
 
 #include <QMessageBox>
+#include <QCheckBox>
