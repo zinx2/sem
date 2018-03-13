@@ -16,12 +16,13 @@ public:
 	const QString blue01 = "#2b78e4";
 	const QString blue02 = "#6fa8dc";
 
-	const QString testColor01 = "#dd4f43";
-	const QString testColor02 = "#ffce44";
+	const QString testColor01 = "#eeeeee";
+	const QString testColor02 = "#eeeeee";
 	const QString testColor03 = "#17a05e";
 	const QString testColor04 = "#4c8bf5";
 	const QString testColor05 = "#364150";
 	const QString testColor06 = "#1caf9a";
+	const QString testColor07 = "#ffce44";
 
 	const QString btnSelectedStyle = "color: white; background-color: #1caf9a";
 	const QString btnReleasedStyle = "color: white; background-color: transparent";

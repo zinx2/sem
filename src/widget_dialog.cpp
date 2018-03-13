@@ -7,7 +7,12 @@ WidgetDialog::WidgetDialog(QString title, int width, int height, QWidget *parent
 	d = Design::instance();
 	m = Model::instance();
 
-	setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+	Qt::WindowFlags flags = windowFlags();
+	Qt::WindowFlags helpFlag = Qt::WindowContextHelpButtonHint;
+	flags = flags & (~helpFlag);
+
+	setWindowTitle(title);
+	setWindowFlags(flags);
 	setFixedWidth(width); setFixedHeight(height);
 	setStyleSheet("background: #eeeeee;");
 	setLayout(new QVBoxLayout(this));
@@ -55,3 +60,21 @@ WidgetDialog::WidgetDialog(QString title, int width, int height, QWidget *parent
 //{
 //	qDebug() << "cancel";
 //}
+void WidgetDialog::aceept()
+{
+	QMessageBox::StandardButton resBtn = QMessageBox::Yes;
+}
+
+void WidgetDialog::reject()
+{
+	QMessageBox::StandardButton resBtn = QMessageBox::Yes;
+	//if (changes) {
+	//	resBtn = QMessageBox::question(this, APP_NAME,
+	//		tr("Are you sure?\n"),
+	//		QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes,
+	//		QMessageBox::Yes);
+	//}
+	//if (resBtn == QMessageBox::Yes) {
+	//	QDialog::reject();
+	//}
+}

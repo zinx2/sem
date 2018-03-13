@@ -131,7 +131,18 @@ void MainWindow::listEMPloyees()
 
 void MainWindow::doBorrow()
 {
+	QMessageBox::StandardButton resBtn = QMessageBox::question(this, "알림",
+		tr("Are you sure?\nAre you sure?\nAre you sure?\nAre you sure234234?\n"),
+		QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes,
+		QMessageBox::Yes);
 
+	if (resBtn == QMessageBox::Yes) {
+		qDebug() << "YES";
+	}
+
+	if (resBtn == QMessageBox::No || resBtn == QMessageBox::Cancel) {
+		m->setModal(false);
+	}
 }
 
 void MainWindow::doReturn()
@@ -145,6 +156,19 @@ void MainWindow::sign()
 	/*DialogSign* dg = new DialogSign(this);
 	dg->show();*/
 
-	WidgetDialogAlarm* dg = new WidgetDialogAlarm("알림", 300, 300, this);
-	dg->show();
+	//WidgetDialogAlarm* dg = new WidgetDialogAlarm("알림", 300, 300, this);
+	//dg->show();
+
+	QMessageBox::StandardButton resBtn = QMessageBox::question(this, "알림",
+		tr("Are you sure?\nAre you sure?\nAre you sure?\nAre you sure234234?\n"),
+		QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes,
+		QMessageBox::Yes);
+
+	if (resBtn == QMessageBox::Yes) {
+		qDebug() << "YES";
+	}
+
+	if (resBtn == QMessageBox::No || resBtn == QMessageBox::Cancel) {
+		m->setModal(false);
+	}
 }

@@ -30,3 +30,5 @@
 #include <QGraphicsEllipseItem>
 #include <QMouseEvent>
 #include <QGraphicsSceneMouseEvent>
+
+#include <QMessageBox>

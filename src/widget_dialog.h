@@ -9,10 +9,16 @@ class WidgetDialog : public QDialog
 public:
 	explicit WidgetDialog(QString title, int width, int height, QWidget *parent = 0);
 
+	public slots:
+	void reject();
+	void aceept();
+
 protected:
 	QWidget* m_wdContents;
 	QWidget* m_wdTail;
 	Design* d;
 	Model* m;
+
+
 
 };

@@ -29,9 +29,9 @@ WidgetMenu::WidgetMenu(QWidget *parent) : WWidget(parent)
 	mainWidget1->layout()->setAlignment(Qt::AlignTop);
 
 	mainWidget2->setLayout(new QVBoxLayout);
-	mainWidget2->layout()->setMargin(0);
-	mainWidget2->layout()->setSpacing(0);
-	mainWidget2->layout()->setAlignment(Qt::AlignBottom);
+	mainWidget2->layout()->setMargin(3);
+	mainWidget2->layout()->setSpacing(3);
+	mainWidget2->layout()->setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
 
 	m_commandProvider->append(new Command(BTN_DEVICE_LIST, "장비목록", btnWidth, 40));
 	mainWidget1->layout()->addWidget(m_commandProvider->command(BTN_DEVICE_LIST));
@@ -43,13 +43,15 @@ WidgetMenu::WidgetMenu(QWidget *parent) : WWidget(parent)
 	mainWidget1->layout()->addWidget(m_commandProvider->command(BTN_EMPLOYEE_MANAGE_LIST));
 	
 	////
-	m_btnBorrow = new Command("borrow", "대출하기", btnWidth, 40);
+	m_btnBorrow = new Command("borrow", "대출하기", btnWidth-4, 40);
+	m_btnBorrow->setStyleSheet("background: " + d->c().testColor07 + "; color:white;");
 	mainWidget2->layout()->addWidget(m_btnBorrow);
 
-	m_btnReturn = new Command("return", "반납하기", btnWidth, 40);
+	m_btnReturn = new Command("return", "반납하기", btnWidth-4, 40);
+	m_btnReturn->setStyleSheet("background: " + d->c().testColor07 + "; color:white;");
 	mainWidget2->layout()->addWidget(m_btnReturn);
 
-	m_btnSign = new Command("sign", "사인하기", btnWidth, 40);
+	m_btnSign = new Command("sign", "사인하기", btnWidth-10, 40);
 	mainWidget2->layout()->addWidget(m_btnSign);
 	connect(m_btnSign, SIGNAL(clicked()), this, SLOT(sign()));
 
