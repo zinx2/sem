@@ -1,6 +1,6 @@
 ﻿#include "widget_dialog.h"
-#include "design.h"
-#include "model.h"
+#include "cs_design.h"
+#include "cs_model.h"
 
 WidgetDialog::WidgetDialog(QString title, int width, int height, QWidget *parent) : QDialog(parent)
 {

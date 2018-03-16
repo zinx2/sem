@@ -2,16 +2,17 @@
 #include "qheader.h"
 #include "widget_dialog.h"
 #include "sign_zone.h"
-class WidgetDialogSignature : public WidgetDialog
+class WidgetDialogSelectionName : public WidgetDialog
 {
 	Q_OBJECT
 public:
-    //type 0:대출, 1:반
-    explicit WidgetDialogSignature(int type, QString title, int width, int height, QWidget *parent = 0);
+	//type 0:대출, 1:반
+	explicit WidgetDialogSelectionName(int type, QString title, int width, int height, QWidget *parent = 0);
 
 	public slots:
 	void confirm();
 	void cancel();
+	void init();
 
 private:
 	QWidget* m_zoneName;

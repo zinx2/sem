@@ -1,9 +1,9 @@
 ﻿#include "widget_list_managements.h"
-#include "networker.h"
-#include "qheader.h"
+#include "cs_networker.h"
+#include "cs_qheader.h"
 WidgetListManagements::WidgetListManagements(QWidget *parent) : WWidget(parent)
 {
-	NetWorker* n = NetWorker::getInstance();
+    NetWorker* n = NetWorker::instance();
 	n->getRentList()->request();
 
 	this->setGeometry(parent->geometry());

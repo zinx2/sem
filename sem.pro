@@ -23,40 +23,51 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 
-SOURCES += \
-        src/main.cpp \
-        src/mainwindow.cpp \
-        src/networker.cpp \
-        src/initializer.cpp \
-        src/widget_menu.cpp \
-        src/widget_page.cpp \
-        src/widget_list_devices.cpp \
-        src/widget_list_employees.cpp \
-        src/widget_list_managements.cpp \
-        src/widget_dialog.cpp \
-        src/widget_dialog_alarm.cpp \
-        src/widget_dialog_signature.cpp \
-        src/commander.cpp \
-        src/sign_zone.cpp
-
 
 HEADERS += \
-        src/mainwindow.h \
-        src/design.h \
-        src/model.h \
-        src/qheader.h \
-        src/networker.h \
-        src/sign_zone.h \
-        src/widget_menu.h \
-        src/wrapped_widget.h \
-        src/widget_page.h \
+        src/cs_command.h \
+        src/cs_design.h \
+        src/cs_model.h \
+        src/cs_networker.h \
+        src/cs_qheader.h \
+        src/dialog_alarm.h \
+        src/dialog_form_device_borrow.h \
+        src/dialog_form_device_return.h \
+        src/dialog_form_device_add.h \
+        src/dialog_question.h \
+        src/dialog_selector_employee.h \
+        src/dialog_signature.h \
+        src/dialog_inspector_borrow.h \
+        src/dialog_inspector_return.h \
+        src/widget_dialog.h \
         src/widget_list_devices.h \
         src/widget_list_employees.h \
         src/widget_list_managements.h \
-        src/widget_dialog.h \
-        src/widget_dialog_alarm.h \
-        src/widget_dialog_signature.h \
-        src/commander.h
+        src/widget_mainwindow.h \
+        src/widget_menu.h \
+        src/widget_page.h \
+        src/wrapped_widget.h
+
+SOURCES += \
+        src/main.cpp \
+        src/cs_initializer.cpp \
+        src/cs_networker.cpp \
+        src/dialog_alarm.cpp \
+        src/dialog_form_device_borrow.cpp \
+        src/dialog_form_device_return.cpp \
+        src/dialog_form_device_add.cpp \
+        src/dialog_question.cpp \
+        src/dialog_selector_employee.cpp \
+        src/dialog_signature.cpp \
+        src/dialog_inspector_borrow.cpp \
+        src/dialog_inspector_return.cpp \
+        src/widget_dialog.cpp \
+        src/widget_list_devices.cpp \
+        src/widget_list_employees.cpp \
+        src/widget_list_managements.cpp \
+        src/widget_mainwindow.cpp \
+        src/widget_menu.cpp \
+        src/widget_page.cpp
 
 FORMS += \
         mainwindow.ui

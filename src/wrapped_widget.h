@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include "qheader.h"
-#include "design.h"
-#include "model.h"
+#include "cs_qheader.h"
+#include "cs_design.h"
+#include "cs_model.h"
 
 class Design; class Model;
 class WWidget : public QWidget {

@@ -1,5 +1,5 @@
 ﻿#include "widget_menu.h"
-#include "command.h"
+#include "cs_command.h"
 
 WidgetMenu::WidgetMenu(QWidget *parent) : WWidget(parent)
 {
@@ -21,7 +21,6 @@ WidgetMenu::WidgetMenu(QWidget *parent) : WWidget(parent)
 	mainHBox->layout()->setSpacing(0);
     mainHBox->layout()->setContentsMargins(0, 0, 0, 0);
 	this->setLayout(mainHBox);
-
 	
 	mainWidget1->setLayout(new QVBoxLayout);
 	mainWidget1->layout()->setMargin(0);
@@ -51,10 +50,6 @@ WidgetMenu::WidgetMenu(QWidget *parent) : WWidget(parent)
 	m_btnReturn->setStyleSheet("background: " + d->c().testColor07 + "; color:white;");
 	mainWidget2->layout()->addWidget(m_btnReturn);
 
-	m_btnSign = new Command("sign", "사인하기", btnWidth-10, 40);
-	mainWidget2->layout()->addWidget(m_btnSign);
-	connect(m_btnSign, SIGNAL(clicked()), this, SLOT(sign()));
-
 	m_commandProvider->select(BTN_DEVICE_LIST);
 	connect(d, SIGNAL(widthMenuChanged()), this, SLOT(resize()));
 
@@ -73,9 +68,4 @@ void WidgetMenu::resize()
 void WidgetMenu::modal()
 {
 	setEnabled(!m->modal());
-}
-
-void WidgetMenu::sign()
-{
-	emit onSign();
 }

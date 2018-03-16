@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "wrapped_widget.h"
 
+class CommandProvider;  class Command;
 class WidgetListDevices;
 class WidgetListEmployees;
 class WidgetListManagements;
@@ -12,31 +13,21 @@ public:
 	explicit WidgetPage(QWidget *parent = 0);
 	QVBoxLayout* mainVBox;
 	QWidget* mainWidget;
-	QWidget* pgWidget;
+	QWidget* pgWidget = nullptr;
 	public slots:
 	void resize();
 	void modal();
-
-	void test1();
-	void test2();
-	void test3();
-	void test4();
-	void test5();
-
-	void listDVIces();
-	void listMNGements();
-	void listEMPloyees();
-
-	public slots:
-	void textChanged();
+	void change(QString tag);
 
 private:
 	QHBoxLayout* mainHBox;
-	WidgetListDevices* wdLDVIces;
-	WidgetListEmployees* wdLEMPloyees;
-	WidgetListManagements* wdLMNGements;
+	WWidget* m_wdList;
 
-	QTextEdit* textEdit;
+	QWidget* m_wdCmds;
+	QLabel* title(QString txt, int width);
+	QLabel* m_lbTitle;
 
 	void clearItem();
+	void clearCommand();
+
 };

@@ -1,15 +1,16 @@
 ﻿#include "widget_page.h"
-#include "networker.h"
+#include "cs_networker.h"
 #include "widget_list_devices.h"
 #include "widget_list_employees.h"
 #include "widget_list_managements.h"
+#include "cs_command.h"
 
 WidgetPage::WidgetPage(QWidget *parent) : WWidget(parent)
 {
 	this->setGeometry(QRect(0, 0, parent->geometry().width(), parent->geometry().height()));
 	mainWidget = new QWidget;
 	mainWidget->setGeometry(this->geometry());
-	mainWidget->setStyleSheet("background-color:" + Design::instance()->c().testColor03);
+	mainWidget->setStyleSheet("background-color:" + Design::instance()->c().testColor05);
 
 	mainVBox = new QVBoxLayout;
 	mainVBox->addWidget(mainWidget);
@@ -18,69 +19,26 @@ WidgetPage::WidgetPage(QWidget *parent) : WWidget(parent)
 
 	mainWidget->setLayout(new QVBoxLayout);
 	mainWidget->layout()->setMargin(0);
+	mainWidget->layout()->setSpacing(0);
 	connect(d, SIGNAL(widthPageChanged()), this, SLOT(resize()));
 	connect(d, SIGNAL(heightPageChanged()), this, SLOT(resize()));
 
-	/* TESST */
-	QWidget* wdTest = new QWidget;
-	mainWidget->layout()->addWidget(wdTest);
-	QHBoxLayout* lyTest = new QHBoxLayout;
-	wdTest->setLayout(lyTest);
-	wdTest->setFixedHeight(50);
-	wdTest->layout()->setSpacing(0);
-	wdTest->layout()->setAlignment(Qt::AlignLeft|Qt::AlignTop);
-
-	QPushButton* btn1 = new QPushButton(wdTest);
-	btn1->setFixedSize(100, 40);
-	btn1->setText("/sem/getUserList");
-	wdTest->layout()->addWidget(btn1);
-	mainWidget->layout()->addWidget(wdTest);
-
-	QPushButton* btn2 = new QPushButton(wdTest);
-	btn2->setFixedSize(100, 40);
-	btn2->setText("/sem/getPartList");
-	wdTest->layout()->addWidget(btn2);
-
-	QPushButton* btn3 = new QPushButton(wdTest);
-	btn3->setFixedSize(100, 40);
-	btn3->setText("/sem/getDeviceList");
-	wdTest->layout()->addWidget(btn3);
-
-	QPushButton* btn4 = new QPushButton(wdTest);
-	btn4->setFixedSize(100, 40);
-	btn4->setText("/sem/getDeviceList");
-	wdTest->layout()->addWidget(btn4);
-
-	QPushButton* btn5 = new QPushButton(wdTest);
-	btn5->setFixedSize(100, 40);
-	btn5->setText("REFRESH LIST");
-	wdTest->layout()->addWidget(btn5);
-
-	textEdit = new QTextEdit(wdTest);
-	connect(textEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
-	wdTest->layout()->addWidget(textEdit);
-
-	connect(btn1, SIGNAL(clicked()), this, SLOT(test1()));
-	connect(btn2, SIGNAL(clicked()), this, SLOT(test2()));
-	connect(btn3, SIGNAL(clicked()), this, SLOT(test3()));
-	connect(btn4, SIGNAL(clicked()), this, SLOT(test4()));
-	connect(btn5, SIGNAL(clicked()), this, SLOT(test5()));
+	m_wdCmds = new QWidget(this);
+	mainWidget->layout()->addWidget(m_wdCmds);
+	m_wdCmds->setLayout(new QHBoxLayout);
+	m_wdCmds->setFixedHeight(40);
+	m_wdCmds->layout()->setSpacing(5);
+	m_wdCmds->layout()->setMargin(0);
+	m_wdCmds->layout()->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
 	pgWidget = new QWidget(this);
 	pgWidget->setLayout(new QVBoxLayout);
-	pgWidget->setStyleSheet("background-color:" + Design::instance()->c().testColor04);
 	pgWidget->layout()->setSpacing(0);
 	pgWidget->layout()->setContentsMargins(0, 0, 0, 0);
 	mainWidget->layout()->addWidget(pgWidget);
-	listDVIces();
+	change(BTN_DEVICE_LIST);
 
 	connect(m, SIGNAL(modalChanged()), this, SLOT(modal()));
-}
-void WidgetPage::textChanged()
-{
-	QString barcode = textEdit->toPlainText();
-	if(barcode.size() > 0 && barcode.at(barcode.size()-1) == '\n')
-		qDebug() << textEdit->toPlainText();
 }
 void WidgetPage::resize()
 {
@@ -89,54 +47,74 @@ void WidgetPage::resize()
 
 	pgWidget->setFixedWidth(d->widthPage());
 	pgWidget->setFixedHeight(d->heightPage());
-}
 
-void WidgetPage::test1()
-{
-	NetWorker* n = NetWorker::getInstance();
-	n->getUserList();
-	n->getPartList();
+	m_wdCmds->setFixedWidth(d->widthPage());
+	m_wdCmds->setFixedHeight(40);
+
+	m_lbTitle->setFixedWidth(d->widthPage()-180);
 }
-void WidgetPage::test2()
+void WidgetPage::change(QString tag)
 {
-	NetWorker* n = NetWorker::getInstance();
-	n->getPartList();
-}
-void WidgetPage::test3()
-{
-	NetWorker* n = NetWorker::getInstance();
-	n->getDeviceList();
-}
-void WidgetPage::test4()
-{
-	NetWorker* n = NetWorker::getInstance();
-	n->getDeviceList(1, 1);
-}
-void WidgetPage::test5()
-{
-	NetWorker* n = NetWorker::getInstance();
-	wdLDVIces->refresh();
-}
-void WidgetPage::listDVIces()
-{
-	qDebug() << "listDVIces";
+	if (tag.isEmpty()) return;
+
 	clearItem();
-	wdLDVIces = new WidgetListDevices(pgWidget);
-	pgWidget->layout()->addWidget(wdLDVIces);
+	clearCommand();
+	if (!tag.compare(BTN_DEVICE_LIST))
+	{
+		m_wdCmds->layout()->addWidget(title("장비목록", m_wdCmds->width() - 180));
+		m_wdCmds->layout()->setContentsMargins(5, 0, 5, 0);
+		m_wdList = new WidgetListDevices(pgWidget);
+		Command* cmdDVIAdd = new Command("dvi_add", "추가", 60, 30);
+		cmdDVIAdd->setStyleSheet("background: #e1e1e1");
+		m_wdCmds->layout()->addWidget(cmdDVIAdd);
+		connect(cmdDVIAdd, SIGNAL(clicked()), m_wdList, SLOT(deviceAdd()));
+		Command* cmdDVIRemove = new Command("dvi_remove", "삭제", 60, 30);
+		cmdDVIRemove->setStyleSheet("background: #e1e1e1");
+		m_wdCmds->layout()->addWidget(cmdDVIRemove);
+		connect(cmdDVIRemove, SIGNAL(clicked()), m_wdList, SLOT(deviceRemove()));
+		Command* cmdDVIEdit = new Command("dvi_edit", "편집", 60, 30);
+		cmdDVIEdit->setStyleSheet("background: #e1e1e1");
+		m_wdCmds->layout()->addWidget(cmdDVIEdit);
+		connect(cmdDVIEdit, SIGNAL(clicked()), m_wdList, SLOT(deviceEdit()));
+	}
+	else if (!tag.compare(BTN_DEVICE_MANAGE_LIST))
+	{
+		m_wdList = new WidgetListManagements(pgWidget);
+		m_wdCmds->layout()->addWidget(title("관리대장", m_wdCmds->width()));
+		m_wdCmds->layout()->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+	}
+	else if (!tag.compare(BTN_EMPLOYEE_MANAGE_LIST))
+	{
+		m_wdList = new WidgetListEmployees(pgWidget);
+		m_wdCmds->layout()->addWidget(title("직원목록", m_wdCmds->width()));
+		m_wdCmds->layout()->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+	}
+
+	if(pgWidget != nullptr)
+		pgWidget->layout()->addWidget(m_wdList);
 }
-void WidgetPage::listMNGements()
+QLabel* WidgetPage::title(QString txt, int width)
 {
-	qDebug() << "listMNGements";
-	clearItem();
-	wdLMNGements = new WidgetListManagements(pgWidget);
-	pgWidget->layout()->addWidget(wdLMNGements);
+	m_lbTitle = new QLabel(txt);
+	QFont font = this->font();
+	font.setPointSize(13);
+	m_lbTitle->setFont(font);
+	m_lbTitle->setFixedSize(width, 40);
+	m_lbTitle->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+	m_lbTitle->setStyleSheet("color:white;");
+	return m_lbTitle;
 }
-void WidgetPage::listEMPloyees()
+void WidgetPage::clearCommand()
 {
-	qDebug() << "listEMPloyees";
-	clearItem();
-	wdLEMPloyees = new WidgetListEmployees(pgWidget);
-	pgWidget->layout()->addWidget(wdLEMPloyees);
+	int cnt = m_wdCmds->layout()->count();
+	for (int i = 0; i < cnt; i++)
+	{
+		QLayoutItem* it = m_wdCmds->layout()->itemAt(0);
+		Command* c = ((Command *)(it->widget()));
+		m_wdCmds->layout()->removeWidget(c);
+		m_wdCmds->layout()->removeItem(it);
+		delete c;
+	}
 }
 void WidgetPage::clearItem()
 {

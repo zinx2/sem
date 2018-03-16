@@ -6,7 +6,7 @@
 #include <QNetworkReply>
 #include <QMutex>
 #include <QUrlQuery>
-#include "model.h"
+#include "cs_model.h"
 #include <QImage>
 #include <QQueue>
 
@@ -40,7 +40,7 @@ class NetWorker : public QObject
 {
 	Q_OBJECT
 public:
-	static NetWorker* getInstance()
+	static NetWorker* instance()
 	{
 		if (m_instance == nullptr)
 			m_instance = new NetWorker();
@@ -68,7 +68,7 @@ public:
 	NetWorker* getDeviceList(int noPart = 1, int searchType = 0, int now = 1);
 	NetWorker* getRentList(int noPart = 1, int now = 1);
 
-	NetWorker* borrowDevice(int barcode, int noUser, QString purpose);
+	NetWorker* borrowDevice(QString barcode, int noUser, QString purpose, QString imgPath= QDir::currentPath() + "/tmp.png");
 	NetWorker* returnDevice(int barcode, int noAdmin, bool isInitial=false);
 	NetWorker* signBorrow(int noRent, QString fileUrl);
 	NetWorker* signReturn(int noRent, QString fileUrl);
@@ -78,6 +78,8 @@ public:
 
 signals:
 	void next();
+	void update(bool result);
+	void upload(bool result);
 
 private:
 	QNetworkRequest createRequest(QString suffixUrl, QUrlQuery queries);

@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "qheader.h"
-#include "design.h"
+#include "cs_qheader.h"
+#include "cs_design.h"
 class Command : public QPushButton
 {
 public:
@@ -58,6 +58,8 @@ public:
 		}
 		return nullptr;
 	}
+
+	QList<Command*> commands() { return m_commands; }
 private:
 	QList<Command*> m_commands;
 	Design* d;

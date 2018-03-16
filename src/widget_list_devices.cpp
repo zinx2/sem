@@ -1,10 +1,11 @@
 ﻿#include "widget_list_devices.h"
-#include "networker.h"
-#include "qheader.h"
+#include "cs_networker.h"
+#include "cs_qheader.h"
+#include "dialog_form_device_add.h"
 WidgetListDevices::WidgetListDevices(QWidget *parent) : WWidget(parent)
 {
-	NetWorker* n = NetWorker::getInstance();
-	n->getDeviceList()->request();;
+    NetWorker* n = NetWorker::instance();
+	n->getDeviceList()->request();
 	
 
 
@@ -52,6 +53,7 @@ void WidgetListDevices::refresh()
 	tableHeader << "번호" << "자산번호" << "장비명" << "취득금액" << "취득일자" << "대출여부" << "비교";
 	table = new QTableWidget(m->countDevice(), columnCount, this);
 	table->setSelectionBehavior(QAbstractItemView::SelectRows);
+	table->setStyleSheet("border: 0px;");
 	table->setSelectionMode(QAbstractItemView::SingleSelection);
 	table->setFixedSize(d->widthPage(), d->heightPage());
 	table->horizontalScrollBar()->setDisabled(true);
@@ -76,8 +78,8 @@ void WidgetListDevices::refresh()
 		item2->setTextAlignment(Qt::AlignCenter);
 		table->setItem(row, 2, item2);
 
-		QTableWidgetItem* item3 = new QTableWidgetItem(dv->price());
-		item3->setTextAlignment(Qt::AlignCenter);
+		QTableWidgetItem* item3 = new QTableWidgetItem(QString("%L1원  ").arg(dv->price()));
+		item3->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
 		table->setItem(row, 3, item3);
 
 		QTableWidgetItem* item4 = new QTableWidgetItem(dv->dateTaked());
@@ -100,4 +102,18 @@ void WidgetListDevices::resize()
 	mainWidget->setFixedWidth(d->widthPage());
 	mainWidget->setFixedHeight(d->heightPage());
 	if (table != nullptr) updateTable();
+}
+
+void WidgetListDevices::deviceAdd()
+{
+	DialogFormDeviceAdd* form = new DialogFormDeviceAdd("장비추가", 500, 300, this);
+	form->show();
+}
+void WidgetListDevices::deviceRemove()
+{
+
+}
+void WidgetListDevices::deviceEdit()
+{
+
 }

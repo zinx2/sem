@@ -1,5 +1,5 @@
-﻿#include "design.h"
-#include "model.h"
+﻿#include "cs_design.h"
+#include "cs_model.h"
 Design* Design::m_instance = nullptr;
 Model* Model::m_instance = nullptr;
 

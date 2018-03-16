@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "wrapped_widget.h"
-#include "command.h"
+#include "cs_command.h"
 class WidgetListEmployees : public WWidget
 {
 	Q_OBJECT
@@ -15,18 +15,6 @@ public:
 	public slots:
 	void resize();
 	void refresh();
-	void test()
-	{
-		qDebug() << "test";
-	}
-	void ccc(int row, int col)
-	{
-		qDebug() << row << "/" << col;
-	}
-	void b(QTableWidgetItem* it)
-	{
-		//qDebug() << row << "/" << col;
-	}
 
 private:
 	QHBoxLayout* mainHBox;

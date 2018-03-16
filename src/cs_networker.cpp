@@ -1,10 +1,10 @@
-﻿#include "networker.h"
+﻿#include "cs_networker.h"
 #include <QMutexLocker>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonValue>
-#include "model.h"
+#include "cs_model.h"
 //#include "imageresponseprovider.h"
 
 NetWorker* NetWorker::m_instance = nullptr;
@@ -267,7 +267,7 @@ NetWorker* NetWorker::getDeviceList(int noPart, int searchType, int now)
 			d->setNameDevice(obj["device_name"].toString());
 			d->setNoAsset(obj["asset_no"].toString());
 			d->setBarcode(obj["barcode"].toString());
-			d->setPrice(obj["get_money"].toString());
+			d->setPrice(obj["get_money"].toInt());
 			d->setDateTaked(obj["get_date"].toString());
 			d->setMemo(obj["memo"].toString());
 			d->borrow(obj["is_rented"].toInt());
@@ -324,7 +324,7 @@ NetWorker* NetWorker::getRentList(int noPart, int now)
 	}));
 	return this;
 }
-NetWorker* NetWorker::borrowDevice(int barcode, int noUser, QString purpose)
+NetWorker* NetWorker::borrowDevice(QString barcode, int noUser, QString purpose, QString imgPath)
 {
 	/********** SET URL QUERIES **********/
 	QUrlQuery queries;
@@ -337,18 +337,21 @@ NetWorker* NetWorker::borrowDevice(int barcode, int noUser, QString purpose)
 		QMutexLocker locker(&m_mtx);
 
 		QJsonDocument jsonDoc = QJsonDocument::fromJson(m_netReply->readAll());
+		
+		qDebug() << QString(m_netReply->readAll());
 		QJsonObject jsonObj = jsonDoc.object();
 		bool isSuccess = jsonObj["is_success"].toBool();
 		if (!isSuccess) {
 			m_netReply->deleteLater();
-			emit next(); return;
+			emit update(false); return;
 		}
 		int noRent = jsonObj["rent_no"].toInt();
 		m_netReply->deleteLater();
 		if (isSuccess && noRent > -1)
-			getRentList();
-
-		emit next();
+		{
+			signBorrow(noRent, imgPath);
+		}
+		emit update(true);
 	}));
 	return this;
 }
@@ -368,10 +371,12 @@ NetWorker* NetWorker::signBorrow(int noRent, QString fileUrl)
 		bool isSuccess = jsonObj["is_success"].toBool();
 		if (!isSuccess) {
 			m_netReply->deleteLater();
-			emit next(); return;
+			emit upload(false); return;
 		}
 		m_netReply->deleteLater();
 		getRentList();
+
+		emit upload(true);
 	}));
 	return this;
 }

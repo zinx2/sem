@@ -16,7 +16,6 @@ public:
 	public slots:
 	void resize();
 	void modal();
-	void sign();
 
 signals:
 	void onSign();

@@ -1,11 +1,11 @@
 ﻿#include "widget_list_employees.h"
-#include "networker.h"
-#include "qheader.h"
+#include "cs_networker.h"
+#include "cs_qheader.h"
 
 WidgetListEmployees::WidgetListEmployees(QWidget *parent) : WWidget(parent)
 {
 	m_commandProvider = new CommandProvider();
-	NetWorker* n = NetWorker::getInstance();
+    NetWorker* n = NetWorker::instance();
 	n->getUserList()->request();
 
 	this->setGeometry(parent->geometry());

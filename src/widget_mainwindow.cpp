@@ -1,14 +1,15 @@
-﻿#include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include "design.h"
-#include "model.h"
+﻿#include "ui_mainwindow.h"
+#include "cs_model.h"
+#include "cs_design.h"
+#include "cs_networker.h"
+#include "cs_command.h"
 #include "widget_menu.h"
 #include "widget_page.h"
-#include "networker.h"
-#include "command.h"
-#include "sign_zone.h"
-#include "widget_dialog_alarm.h"
-#include "widget_dialog_signature.h"
+#include "dialog_signature.h"
+#include "dialog_alarm.h"
+#include "dialog_inspector_borrow.h"
+#include "dialog_inspector_return.h"
+#include "widget_mainwindow.h"
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -54,7 +55,6 @@ void MainWindow::initializeUI()
 	QVBoxLayout* vBoxMenubar = new QVBoxLayout(frameMenu);
 	vBoxMenubar->setMargin(0);
 	vBoxMenubar->addWidget(widgetMenu);
-	connect(widgetMenu, SIGNAL(onSign()), this, SLOT(sign()));
 
 	x += d->widthMenu(); w = d->widthPage(); h = d->heightPage();
 	setWidget(framePage, QRect(x, y, w, h), d->c().testColor02);
@@ -106,8 +106,9 @@ void MainWindow::connections()
 
 void MainWindow::listDVIces()
 {
-	widgetPage->listDVIces();
+	//widgetPage->listDVIces();
 	widgetMenu->commandProvider()->select(BTN_DEVICE_LIST);
+	widgetPage->change(BTN_DEVICE_LIST);
 	//connect(widgetMenu->commandProvider()->command(BTN_DEVICE_LIST), SIGNAL(clicked()), this, SLOT(listDVIces()));
 	//connect(widgetMenu->commandProvider()->command(BTN_DEVICE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listMNGements()));
 	//connect(widgetMenu->commandProvider()->command(BTN_EMPLOYEE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
@@ -115,8 +116,9 @@ void MainWindow::listDVIces()
 
 void MainWindow::listMNGements()
 {
-	widgetPage->listMNGements();
+	//widgetPage->listMNGements();
 	widgetMenu->commandProvider()->select(BTN_DEVICE_MANAGE_LIST);
+	widgetPage->change(BTN_DEVICE_MANAGE_LIST);
 	//connect(widgetMenu->commandProvider()->command(BTN_DEVICE_LIST), SIGNAL(clicked()), this, SLOT(listDVIces()));
 	//connect(widgetMenu->commandProvider()->command(BTN_DEVICE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listMNGements()));
 	//connect(widgetMenu->commandProvider()->command(BTN_EMPLOYEE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
@@ -124,47 +126,19 @@ void MainWindow::listMNGements()
 
 void MainWindow::listEMPloyees()
 {
-	widgetPage->listEMPloyees();
+	//widgetPage->listEMPloyees();
 	widgetMenu->commandProvider()->select(BTN_EMPLOYEE_MANAGE_LIST);
-	//connect(widgetMenu->commandProvider()->command(BTN_DEVICE_LIST), SIGNAL(clicked()), this, SLOT(listDVIces()));
-	//connect(widgetMenu->commandProvider()->command(BTN_DEVICE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listMNGements()));
-	//connect(widgetMenu->commandProvider()->command(BTN_EMPLOYEE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
+	widgetPage->change(BTN_EMPLOYEE_MANAGE_LIST);
 }
 
 void MainWindow::doBorrow()
 {
-
-	WidgetDialogSignature* wddSignature = new WidgetDialogSignature(0, "대출하기", 500, 500, this);
-	wddSignature->show();
-	m->setModal(true);
+	DialogInspectorBorrow* inspector = new DialogInspectorBorrow("장비 선택", 500, 200, this);
+	inspector->show();
 }
 
 void MainWindow::doReturn()
 {
-    WidgetDialogSignature* wddSignature = new WidgetDialogSignature(1, "반납하기", 500, 500, this);
-    wddSignature->show();
-	m->setModal(true);
-}
-
-void MainWindow::sign()
-{
-	m->setModal(true);
-	/*DialogSign* dg = new DialogSign(this);
-	dg->show();*/
-
-	//WidgetDialogAlarm* dg = new WidgetDialogAlarm("알림", 300, 300, this);
-	//dg->show();
-
-	QMessageBox::StandardButton resBtn = QMessageBox::question(this, "알림",
-		tr("Are you sure?\nAre you sure?\nAre you sure?\nAre you sure234234?\n"),
-		QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes,
-		QMessageBox::Yes);
-
-	if (resBtn == QMessageBox::Yes) {
-		qDebug() << "YES";
-	}
-
-	if (resBtn == QMessageBox::No || resBtn == QMessageBox::Cancel) {
-		m->setModal(false);
-	}
+	DialogInspectorReturn* inspector = new DialogInspectorReturn("장비 선택", 500, 200, this);
+	inspector->show();
 }

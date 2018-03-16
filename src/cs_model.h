@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "qheader.h"
+#include "cs_qheader.h"
 #define BTN_DEVICE_LIST "devicelist"
 #define BTN_DEVICE_MANAGE_LIST "devicemanagelist"
 #define BTN_EMPLOYEE_MANAGE_LIST "employeemanagelist"
@@ -10,7 +10,7 @@ class Device : public QObject {
 		Q_PROPERTY(QString nameDevice READ nameDevice WRITE setNameDevice NOTIFY nameDeviceChanged)
 		Q_PROPERTY(QString noAsset READ noAsset WRITE setNoAsset NOTIFY noAssetChanged)
 		Q_PROPERTY(QString barcode READ barcode WRITE setBarcode NOTIFY barcodeChanged)
-		Q_PROPERTY(QString price READ price WRITE setPrice NOTIFY priceChanged)
+		Q_PROPERTY(int price READ price WRITE setPrice NOTIFY priceChanged)
 		Q_PROPERTY(QString dateTaked READ dateTaked WRITE setDateTaked NOTIFY dateTakedChanged)
 		Q_PROPERTY(QString memo READ memo WRITE setMemo NOTIFY memoChanged)
 		Q_PROPERTY(bool borrowed READ borrowed WRITE borrow NOTIFY borrowedChanged)
@@ -19,7 +19,7 @@ public:
 	QString nameDevice() const { return m_nameDevice; }
 	QString noAsset() const { return m_noAsset; }
 	QString barcode() const { return m_barcode; }
-	QString price() const { return m_price; }
+	int price() const { return m_price; }
 	QString dateTaked() const { return m_dateTaked; }
 	QString memo() const { return m_memo; }
 	bool borrowed() const { return m_borrowed; }
@@ -29,7 +29,7 @@ public:
 	void setNameDevice(const QString &m) { m_nameDevice = m; emit nameDeviceChanged(); }
 	void setNoAsset(const QString &m) { m_noAsset = m; emit noAssetChanged(); }
 	void setBarcode(const QString &m) { m_barcode = m; emit barcodeChanged(); }
-	void setPrice(const QString &m) { m_price = m; emit priceChanged(); }
+	void setPrice(const int &m) { m_price = m; emit priceChanged(); }
 	void setDateTaked(const QString &m) { m_dateTaked = m; emit dateTakedChanged(); }
 	void setMemo(const QString &m) { m_memo = m; emit memoChanged(); }
 	void borrow(bool m) { m_borrowed = m; emit borrowedChanged(); };
@@ -50,7 +50,7 @@ private:
 	QString m_nameDevice;
 	QString m_noAsset;
 	QString m_barcode;
-	QString m_price;
+	int m_price;
 	QString m_dateTaked;
 	QString m_memo;
 	bool m_borrowed = false;
@@ -182,6 +182,7 @@ class Model : public QObject {
 		Q_PROPERTY(QString dir READ dir WRITE setDir NOTIFY dirChanged)
 		Q_PROPERTY(QString log READ log WRITE setLog NOTIFY logChanged)
 		Q_PROPERTY(QString date READ date WRITE setDate NOTIFY dateChanged)
+		Q_PROPERTY(QString currentPage READ currentPage WRITE setCurrentPage NOTIFY pageChanged)
 		Q_PROPERTY(bool full READ full WRITE setFull NOTIFY fullChanged)
 		Q_PROPERTY(bool pressedCtrl READ pressedCtrl WRITE pressCtrl NOTIFY pressedCtrlChanged)
 		Q_PROPERTY(bool modal READ modal WRITE setModal NOTIFY modalChanged)
@@ -231,6 +232,7 @@ public:
 	int scaledItemHeight() const { return m_scaledItemHeight; }
 	int itemFixedWidth() const { return m_itemFixedWidth; }
 	int itemFixedHeight() const { return m_itemFixedHeight; }
+	QString currentPage() const { return m_currentPage;  }
 
 	public slots:
     void setDevices(QList<Device*> m) { m_devices.clear(); m_devices = m; emit devicesChanged(); }
@@ -251,6 +253,7 @@ public:
 	void setScaledItemHeight(int m) { m_scaledItemHeight = m; emit scaledItemHeightChanged(); }
 	void setItemFixedWidth(int m) { m_itemFixedWidth = m; emit itemFixedWidthChanged(); }
 	void setItemFixedHeight(int m) { m_itemFixedHeight = m; emit itemFixedHeightChanged(); }
+	void setCurrentPage(QString &m) { m_currentPage = m; emit pageChanged(); }
 
 signals:
 	void messageChanged();
@@ -277,6 +280,7 @@ signals:
 	void partsChanged();
 	void employeesChanged();
 	void rentsChanged();
+	void pageChanged();
 
 private:
 	QList<Device*> m_devices;
@@ -289,6 +293,7 @@ private:
 	QString m_dir;
 	QString m_log;
 	QString m_date;
+	QString m_currentPage;
 	bool m_full = false;
 	bool m_pressedCtrl = false;
 	bool m_modal = false;

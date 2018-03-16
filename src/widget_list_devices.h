@@ -15,6 +15,9 @@ public:
 	public slots:
 	void resize();
 	void refresh();
+	void deviceAdd();
+	void deviceRemove();
+	void deviceEdit();
 
 private:
 	QHBoxLayout* mainHBox;
