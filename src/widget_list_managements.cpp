@@ -1,6 +1,8 @@
 ﻿#include "widget_list_managements.h"
 #include "cs_networker.h"
 #include "cs_qheader.h"
+#include "cs_command.h"
+#include "cs_component.h"
 WidgetListManagements::WidgetListManagements(QWidget *parent) : WWidget(parent)
 {
     NetWorker* n = NetWorker::instance();
@@ -10,14 +12,29 @@ WidgetListManagements::WidgetListManagements(QWidget *parent) : WWidget(parent)
 	this->setLayout(new QVBoxLayout(this));
 	this->layout()->setMargin(0);
 
+	m_cmdPrev = (new Command("cancel", "이전", 70, 30))->initStyleSheet("background: #e1e1e1;");
+	connect(m_cmdPrev, SIGNAL(clicked()), this, SLOT(prev()));
+	m_cmdNext = (new Command("search", "다음", 70, 30))->initStyleSheet("background: #e1e1e1;");
+	connect(m_cmdNext, SIGNAL(clicked()), this, SLOT(next()));
+
+	m_lbCnt = (new CPLabel(120, 40, getCountDevice()));
+
 	mainWidget = new QWidget(this);
 	mainWidget->setFixedWidth(d->widthPage());
 	mainWidget->setFixedHeight(d->heightPage());
 	mainWidget->setStyleSheet("background-color:" + Design::instance()->c().testColor02);
 	mainWidget->setLayout(new QVBoxLayout);
+	mainWidget->layout()->setAlignment(Qt::AlignTop);
 	mainWidget->layout()->setMargin(0);
+	mainWidget->layout()->setSpacing(0);
 
 	this->layout()->addWidget(mainWidget);
+	m_wdNavi = (new CPWidget(d->widthPage(), 40, new QHBoxLayout))
+		->initAlignment(Qt::AlignRight)->initContentsMargins(0, 5, 0, 0)
+		->append(m_lbCnt)
+		->append(m_cmdPrev)
+		->append(m_cmdNext);
+
 	refresh();
 
 	connect(d, SIGNAL(widthPageChanged()), this, SLOT(resize()));
@@ -38,8 +55,9 @@ void WidgetListManagements::refresh()
 	tableHeader << "번호" << "자산번호" << "장비명" << "대출날짜" << "대출자" << "서명" << "반납날짜" << "확인자" << "서명" << "확인";
 	table = new QTableWidget(cnt, columnCount, this);
 	table->setSelectionBehavior(QAbstractItemView::SelectRows);
+	table->setStyleSheet("border: 0px;");
 	table->setSelectionMode(QAbstractItemView::SingleSelection);
-	table->setFixedSize(d->widthPage(), d->heightPage());
+	table->setFixedSize(d->widthPage(), d->heightPage() - 80);
 	table->horizontalScrollBar()->setDisabled(true);
 	table->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	updateTable();
@@ -51,7 +69,7 @@ void WidgetListManagements::refresh()
 	{
 		Rent* dv = m->rents().at(row);
 
-		QTableWidgetItem* item0 = new QTableWidgetItem(QString("%1").arg(row + 1));
+		QTableWidgetItem* item0 = new QTableWidgetItem(QString("%1").arg((row + 1) + (m->pageNumber() - 1)*COUNT_PAGE));
 		item0->setTextAlignment(Qt::AlignCenter);
 		table->setItem(row, 0, item0);
 
@@ -92,6 +110,10 @@ void WidgetListManagements::refresh()
 		table->setItem(row, 9, item9);
 	}
 	mainWidget->layout()->addWidget(table);
+	mainWidget->layout()->addWidget(m_wdNavi);
+	m_lbCnt->setText(getCountDevice());
+	m_cmdPrev->setEnabled(m->countCurrentDevice() > 20);
+	m_cmdNext->setEnabled(m->countCurrentDevice() < m->countTotalDevice());
 	update();
 }
 void WidgetListManagements::resize()
@@ -99,10 +121,11 @@ void WidgetListManagements::resize()
 	mainWidget->setFixedWidth(d->widthPage());
 	mainWidget->setFixedHeight(d->heightPage());
 	if (table != nullptr) updateTable();
+	m_wdNavi->setFixedWidth(d->widthPage());
 }
 void WidgetListManagements::updateTable()
 {
-	table->setFixedSize(d->widthPage(), d->heightPage());
+	table->setFixedSize(d->widthPage(), d->heightPage() - 80);
 	table->setColumnWidth(0, table->width() * 0.05);
 	table->setColumnWidth(1, table->width() * 0.10);
 	table->setColumnWidth(2, table->width() * 0.10);
@@ -113,4 +136,23 @@ void WidgetListManagements::updateTable()
 	table->setColumnWidth(7, table->width() * 0.10);
 	table->setColumnWidth(8, table->width() * 0.10);
 	table->setColumnWidth(9, table->width() * 0.05);
+}
+
+QString WidgetListManagements::getCountDevice()
+{
+	return "개수 : " + QString("%1").arg(m->countCurrentDevice()) + "/" + QString("%1").arg(m->countTotalDevice());
+}
+
+void WidgetListManagements::prev()
+{
+	m->setPageNumber(m->pageNumber() - 1);
+	qDebug() << m->pageNumber();
+	m->setNotificator(new Notificator(true, "", Notificator::MNGList, false));
+
+}
+void WidgetListManagements::next()
+{
+	m->setPageNumber(m->pageNumber() + 1);
+	qDebug() << m->pageNumber();
+	m->setNotificator(new Notificator(true, "", Notificator::MNGList, false));
 }

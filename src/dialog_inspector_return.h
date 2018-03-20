@@ -17,6 +17,7 @@ public:
 	void init();
 	void recognize();
 	void exit();
+	void search();
 
 private:
 	QWidget* m_zoneBarcode;
@@ -30,4 +31,5 @@ private:
 
 	bool doNext = false;
 	int m_recognizationFinished = true;
+	int m_noDevice = -1;
 };

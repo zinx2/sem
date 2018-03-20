@@ -34,8 +34,10 @@ HEADERS += \
         src/dialog_form_device_borrow.h \
         src/dialog_form_device_return.h \
         src/dialog_form_device_add.h \
+        src/dialog_form_device_edit.h \
         src/dialog_question.h \
         src/dialog_selector_employee.h \
+        src/dialog_selector_part.h \
         src/dialog_signature.h \
         src/dialog_inspector_borrow.h \
         src/dialog_inspector_return.h \
@@ -46,7 +48,8 @@ HEADERS += \
         src/widget_mainwindow.h \
         src/widget_menu.h \
         src/widget_page.h \
-        src/wrapped_widget.h
+        src/wrapped_widget.h \
+        src/cs_component.h
 
 SOURCES += \
         src/main.cpp \
@@ -56,8 +59,10 @@ SOURCES += \
         src/dialog_form_device_borrow.cpp \
         src/dialog_form_device_return.cpp \
         src/dialog_form_device_add.cpp \
+        src/dialog_form_device_edit.cpp \
         src/dialog_question.cpp \
         src/dialog_selector_employee.cpp \
+        src/dialog_selector_part.cpp \
         src/dialog_signature.cpp \
         src/dialog_inspector_borrow.cpp \
         src/dialog_inspector_return.cpp \
@@ -71,3 +76,6 @@ SOURCES += \
 
 FORMS += \
         mainwindow.ui
+
+RESOURCES += \
+    res.qrc

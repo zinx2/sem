@@ -28,29 +28,31 @@ WidgetMenu::WidgetMenu(QWidget *parent) : WWidget(parent)
 	mainWidget1->layout()->setAlignment(Qt::AlignTop);
 
 	mainWidget2->setLayout(new QVBoxLayout);
-	mainWidget2->layout()->setMargin(3);
-	mainWidget2->layout()->setSpacing(3);
-	mainWidget2->layout()->setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
+	mainWidget2->layout()->setMargin(5);
+	mainWidget2->layout()->setSpacing(5);
+	mainWidget2->layout()->setAlignment(Qt::AlignBottom | Qt::AlignRight);
 
-	m_commandProvider->append(new Command(BTN_DEVICE_LIST, "장비목록", btnWidth, 40));
-	mainWidget1->layout()->addWidget(m_commandProvider->command(BTN_DEVICE_LIST));
+	m_commandProvider->append((new Command(DEVICE_LIST, "", btnWidth, 40))->initIcon(":/imgs/clipboard_18.png", "장비목록"));
+	mainWidget1->layout()->addWidget(m_commandProvider->command(DEVICE_LIST));
 
-	m_commandProvider->append(new Command(BTN_DEVICE_MANAGE_LIST, "관리대장", btnWidth, 40));
-	mainWidget1->layout()->addWidget(m_commandProvider->command(BTN_DEVICE_MANAGE_LIST));
+	m_commandProvider->append((new Command(DEVICE_MANAGE_LIST, "", btnWidth, 40))->initIcon(":/imgs/clipboard_18.png", "관리대장"));
+	mainWidget1->layout()->addWidget(m_commandProvider->command(DEVICE_MANAGE_LIST));
 
-	m_commandProvider->append(new Command(BTN_EMPLOYEE_MANAGE_LIST, "사원관리", btnWidth, 40));
-	mainWidget1->layout()->addWidget(m_commandProvider->command(BTN_EMPLOYEE_MANAGE_LIST));
+	m_commandProvider->append((new Command(EMPLOYEE_MANAGE_LIST, "", btnWidth, 40))->initIcon(":/imgs/clipboard_18.png", "사원관리"));
+	mainWidget1->layout()->addWidget(m_commandProvider->command(EMPLOYEE_MANAGE_LIST));
 	
 	////
-	m_btnBorrow = new Command("borrow", "대출하기", btnWidth-4, 40);
+	m_btnBorrow = new Command("borrow", "대출하기", btnWidth-10, 40);
+	m_btnBorrow->initIcon(":/imgs/exit_18.png");
 	m_btnBorrow->setStyleSheet("background: " + d->c().testColor07 + "; color:white;");
 	mainWidget2->layout()->addWidget(m_btnBorrow);
 
-	m_btnReturn = new Command("return", "반납하기", btnWidth-4, 40);
+	m_btnReturn = new Command("return", "반납하기", btnWidth-10, 40);
+	m_btnReturn->initIcon(":/imgs/export_18.png");
 	m_btnReturn->setStyleSheet("background: " + d->c().testColor07 + "; color:white;");
 	mainWidget2->layout()->addWidget(m_btnReturn);
 
-	m_commandProvider->select(BTN_DEVICE_LIST);
+	m_commandProvider->select(DEVICE_LIST);
 	connect(d, SIGNAL(widthMenuChanged()), this, SLOT(resize()));
 
 	connect(m, SIGNAL(modalChanged()), this, SLOT(modal()));

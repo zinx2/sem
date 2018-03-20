@@ -17,6 +17,7 @@ WidgetListEmployees::WidgetListEmployees(QWidget *parent) : WWidget(parent)
 	mainWidget->setFixedHeight(d->heightPage());
 	mainWidget->setStyleSheet("background-color:" + Design::instance()->c().testColor02);
 	mainWidget->setLayout(new QVBoxLayout);
+	mainWidget->layout()->setAlignment(Qt::AlignTop);
 	mainWidget->layout()->setMargin(0);
 
 	this->layout()->addWidget(mainWidget);
@@ -41,7 +42,7 @@ void WidgetListEmployees::refresh()
 	table = new QTableWidget(cnt, columnCount, this);
 	table->setSelectionBehavior(QAbstractItemView::SelectRows);
 	table->setSelectionMode(QAbstractItemView::SingleSelection);
-	table->setFixedSize(d->widthPage(), d->heightPage());
+	table->setFixedSize(d->widthPage(), d->heightPage() - d->heightTitleBar());
 	table->horizontalScrollBar()->setDisabled(true);
 	table->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	updateTable();
@@ -71,15 +72,21 @@ void WidgetListEmployees::refresh()
 		connect(cmdRemove, &QPushButton::clicked, this, [=]()-> void {
 			qDebug() << cmdRemove->tag();
 			QList<Employee*> list = m->employees();
-			int index = 0;
+			//int index = 0;
+			int noUser = -1;
 			foreach(Employee* e, list)
-			{				
+			{	
 				if (!QString("%1").arg(e->noUser()).compare(cmdRemove->tag()))
-					list.removeAt(index);
-				index++;
+				{
+					//list.removeAt(index);
+					noUser = e->noUser();
+					break;
+				}
+				//index++;
 			}
-			m->setEmployees(list);
-			refresh();
+			//m->setEmployees(list);
+			NetWorker::instance()->expire(noUser)->request();
+			//refresh();
 		});
 
 		QHBoxLayout *btnLayout = new QHBoxLayout();
@@ -102,7 +109,7 @@ void WidgetListEmployees::resize()
 }
 void WidgetListEmployees::updateTable()
 {
-	table->setFixedSize(d->widthPage(), d->heightPage());
+	table->setFixedSize(d->widthPage(), d->heightPage() - d->heightTitleBar());
 	table->setColumnWidth(0, table->width() * 0.05);
 	table->setColumnWidth(1, table->width() * 0.35);
 	table->setColumnWidth(2, table->width() * 0.20);

@@ -10,7 +10,7 @@ class DialogFormDeviceReturn : public WidgetDialog
 	Q_OBJECT
 public:
     //type 0:대출, 1:반납
-    explicit DialogFormDeviceReturn(QString title, int width, int height, QWidget *parent = 0);
+    explicit DialogFormDeviceReturn(int noDevice, QString title, int width, int height, QWidget *parent = 0);
 
 	void setData(QString noAsset);
 	void notify(int row);
@@ -24,15 +24,9 @@ public:
 	void finish();
 	void activate();
 	void search();
-	void check(int state);
+
 
 private:
-	QWidget* m_zoneDevice;
-	QWidget* m_zoneName;
-	QWidget* m_zoneUse;
-	QWidget* m_zoneSecure;
-	QWidget* m_zoneSign;
-
 	QTextEdit* edNameDevice;
 	QTextEdit* edNoAsset;
 	QTextEdit* edNameUserOrAdmin;
@@ -41,7 +35,8 @@ private:
 
 	QLabel* m_lbMessage;
 
-	QCheckBox* cbSecure;
+	QRadioButton* rbYes;
+	QRadioButton* rbNo;
 	Command* btnConfirm;
 
 	DialogSignature* szSign;
@@ -51,4 +46,5 @@ private:
 	Employee* m_employee;
 
 	int m_type;
+	int m_noDevice;
 };

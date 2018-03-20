@@ -26,7 +26,7 @@ WidgetPage::WidgetPage(QWidget *parent) : WWidget(parent)
 	m_wdCmds = new QWidget(this);
 	mainWidget->layout()->addWidget(m_wdCmds);
 	m_wdCmds->setLayout(new QHBoxLayout);
-	m_wdCmds->setFixedHeight(40);
+	m_wdCmds->setFixedHeight(d->heightTitleBar());
 	m_wdCmds->layout()->setSpacing(5);
 	m_wdCmds->layout()->setMargin(0);
 	m_wdCmds->layout()->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
@@ -36,7 +36,7 @@ WidgetPage::WidgetPage(QWidget *parent) : WWidget(parent)
 	pgWidget->layout()->setSpacing(0);
 	pgWidget->layout()->setContentsMargins(0, 0, 0, 0);
 	mainWidget->layout()->addWidget(pgWidget);
-	change(BTN_DEVICE_LIST);
+	change(DEVICE_LIST);
 
 	connect(m, SIGNAL(modalChanged()), this, SLOT(modal()));
 }
@@ -49,7 +49,7 @@ void WidgetPage::resize()
 	pgWidget->setFixedHeight(d->heightPage());
 
 	m_wdCmds->setFixedWidth(d->widthPage());
-	m_wdCmds->setFixedHeight(40);
+	m_wdCmds->setFixedHeight(d->heightTitleBar());
 
 	m_lbTitle->setFixedWidth(d->widthPage()-180);
 }
@@ -59,31 +59,31 @@ void WidgetPage::change(QString tag)
 
 	clearItem();
 	clearCommand();
-	if (!tag.compare(BTN_DEVICE_LIST))
+	if (!tag.compare(DEVICE_LIST))
 	{
 		m_wdCmds->layout()->addWidget(title("장비목록", m_wdCmds->width() - 180));
 		m_wdCmds->layout()->setContentsMargins(5, 0, 5, 0);
 		m_wdList = new WidgetListDevices(pgWidget);
-		Command* cmdDVIAdd = new Command("dvi_add", "추가", 60, 30);
-		cmdDVIAdd->setStyleSheet("background: #e1e1e1");
+		
+		Command* cmdDVIAdd = (new Command("dvi_add", "추가", 60, 30))->initStyleSheet("background: #e1e1e1");
 		m_wdCmds->layout()->addWidget(cmdDVIAdd);
-		connect(cmdDVIAdd, SIGNAL(clicked()), m_wdList, SLOT(deviceAdd()));
-		Command* cmdDVIRemove = new Command("dvi_remove", "삭제", 60, 30);
-		cmdDVIRemove->setStyleSheet("background: #e1e1e1");
+		connect(cmdDVIAdd, SIGNAL(clicked()), m_wdList, SLOT(openDialogToAdd()));
+		
+		Command* cmdDVIRemove = (new Command("dvi_remove", "삭제", 60, 30))->initStyleSheet("background: #e1e1e1");
 		m_wdCmds->layout()->addWidget(cmdDVIRemove);
-		connect(cmdDVIRemove, SIGNAL(clicked()), m_wdList, SLOT(deviceRemove()));
-		Command* cmdDVIEdit = new Command("dvi_edit", "편집", 60, 30);
-		cmdDVIEdit->setStyleSheet("background: #e1e1e1");
+		connect(cmdDVIRemove, SIGNAL(clicked()), m_wdList, SLOT(openDialogToRemove()));
+		
+		Command* cmdDVIEdit = (new Command("dvi_edit", "편집", 60, 30))->initStyleSheet("background: #e1e1e1");
 		m_wdCmds->layout()->addWidget(cmdDVIEdit);
-		connect(cmdDVIEdit, SIGNAL(clicked()), m_wdList, SLOT(deviceEdit()));
+		connect(cmdDVIEdit, SIGNAL(clicked()), m_wdList, SLOT(openDialogToEdit()));
 	}
-	else if (!tag.compare(BTN_DEVICE_MANAGE_LIST))
+	else if (!tag.compare(DEVICE_MANAGE_LIST))
 	{
 		m_wdList = new WidgetListManagements(pgWidget);
 		m_wdCmds->layout()->addWidget(title("관리대장", m_wdCmds->width()));
 		m_wdCmds->layout()->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 	}
-	else if (!tag.compare(BTN_EMPLOYEE_MANAGE_LIST))
+	else if (!tag.compare(EMPLOYEE_MANAGE_LIST))
 	{
 		m_wdList = new WidgetListEmployees(pgWidget);
 		m_wdCmds->layout()->addWidget(title("직원목록", m_wdCmds->width()));
@@ -99,7 +99,7 @@ QLabel* WidgetPage::title(QString txt, int width)
 	QFont font = this->font();
 	font.setPointSize(13);
 	m_lbTitle->setFont(font);
-	m_lbTitle->setFixedSize(width, 40);
+	m_lbTitle->setFixedSize(width, d->heightTitleBar());
 	m_lbTitle->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 	m_lbTitle->setStyleSheet("color:white;");
 	return m_lbTitle;

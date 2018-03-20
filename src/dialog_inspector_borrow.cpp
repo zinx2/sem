@@ -22,6 +22,8 @@ DialogInspectorBorrow::DialogInspectorBorrow(QString title, int width, int heigh
 	m_zoneBarcode->setFixedSize(width, 60);
 	m_zoneBarcode->layout()->setAlignment(Qt::AlignTop);
 	m_zoneBarcode->layout()->setContentsMargins(10, 0, 0, 0);
+
+
 	QLabel* lbBarcode = new QLabel("대출할 장비를 인식시켜 주세요.");
 	lbBarcode->setFixedSize(width - 20, 25);
 	lbBarcode->setAlignment(Qt::AlignBottom);
@@ -31,8 +33,6 @@ DialogInspectorBorrow::DialogInspectorBorrow(QString title, int width, int heigh
 	edBarcode->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	edBarcode->setStyleSheet("background: white;");
 	edBarcode->setAlignment(Qt::AlignHCenter);
-	//m_zoneBarcode->layout()->addWidget(edBarcode);
-	//m_wdContents->layout()->addWidget(m_zoneBarcode);
 
 	QWidget* subzoneBarcode = new QWidget(this);
 	subzoneBarcode->setLayout(new QHBoxLayout(this));
@@ -52,12 +52,13 @@ DialogInspectorBorrow::DialogInspectorBorrow(QString title, int width, int heigh
 	QLabel* lbNameDevice = new QLabel("인식된 장비 :");
 	lbNameDevice->setFixedSize(70, 25);
 	lbNameDevice->setAlignment(Qt::AlignBottom);
-	m_zoneDevice->layout()->addWidget(lbNameDevice);
 	edNameDevice = new QLabel(m_zoneDevice);
 	edNameDevice->setFixedSize(width - 20, 50);
 	edNameDevice->setAlignment(Qt::AlignTop);
+	m_zoneDevice->layout()->addWidget(lbNameDevice);
 	m_zoneDevice->layout()->addWidget(edNameDevice);
 	m_wdContents->layout()->addWidget(m_zoneDevice);
+	//m_zoneDevice->setVisible(false);
 
 	m_wdTail->layout()->addWidget(btnInit);
 	m_wdTail->layout()->addWidget(btnConfirm);
@@ -66,51 +67,37 @@ DialogInspectorBorrow::DialogInspectorBorrow(QString title, int width, int heigh
 	connect(btnConfirm, SIGNAL(clicked()), this, SLOT(confirm()));
 	connect(btnCancel, SIGNAL(clicked()), this, SLOT(cancel()));
 	connect(btnInit, SIGNAL(clicked()), this, SLOT(init()));
-	connect(btnSearch, SIGNAL(clicked()), this, SLOT(recognize()));
-	connect(edBarcode, SIGNAL(textChanged()), this, SLOT(recognize()));
+	connect(btnSearch, SIGNAL(clicked()), this, SLOT(search()));
+	//connect(edBarcode, SIGNAL(textChanged()), this, SLOT(recognize()));
 	connect(this, SIGNAL(rejected()), this, SLOT(cancel()));  
 	connect(m, SIGNAL(modalChanged()), this, SLOT(exit()));
+	connect(m, SIGNAL(alarmedChanged()), this, SLOT(recognize()));
 }
 void DialogInspectorBorrow::exit()
 {
-	//NetWorker* n = NetWorker::getInstance();
-	//connect(n, SIGNAL(notify(bool result)), this, SLOT());
 	close();
 }
 void DialogInspectorBorrow::recognize()
 {
-	QString barcode = edBarcode->toPlainText();
-	if (barcode.size() == 0) return;
-	if (barcode.at(barcode.size() - 1) == '\n')
+	if (m->alarmed() && m->notificator()->type() == Notificator::DVIBorrowedSearch)
 	{
-		QStringRef subString(&barcode, 0, barcode.size() - 1);
-		edBarcode->setText(subString.toString());
-		edBarcode->setAlignment(Qt::AlignHCenter);
-		barcode = subString.toString();
-	}
-	
-	int searchedCnt = 0;
-	foreach(Device* d, m->devices())
-	{
-		if (!d->noAsset().compare(barcode))
+		bool result = m->notificator()->result();
+		if (result)
 		{
-			searchedCnt++;
+			Device* d = m->searchedDevice();
 			QString aboutDevice = d->nameDevice() + "\n";
 			aboutDevice += d->borrowed() ? "이미 대출된 장비입니다." : "대출 가능한 장비입니다.";
-			bool b = d->borrowed();
 			btnConfirm->setEnabled(!d->borrowed()); /* 대출되지 않았을 때만 대출버튼 사용가능 */
 			edNameDevice->setText(aboutDevice);
-			update();
-			break;
 		}
+		else
+		{
+			btnConfirm->setEnabled(false);
+			edNameDevice->setText("검색된 장비가 없습니다.");
+		}		
+		update();
+		m->alarm(false);
 	}
-	if (searchedCnt == 0)
-	{
-		btnConfirm->setEnabled(false);	/* 대출된 장비가 없을 때는 대출버튼 사용불가 */
-		edNameDevice->setText("검색된 장비가 없습니다.");
-	}
-	QTextCursor tmpCursor = edBarcode->textCursor();
-	edBarcode->moveCursor(QTextCursor::EndOfLine);
 }
 void DialogInspectorBorrow::confirm()
 {
@@ -127,4 +114,26 @@ void DialogInspectorBorrow::init()
 	edNameDevice->setText("");
 	edBarcode->setText("");
 	edBarcode->setAlignment(Qt::AlignHCenter);
+}
+void DialogInspectorBorrow::search()
+{
+	QString barcode = edBarcode->toPlainText();
+	if (barcode.size() == 0) {
+		edNameDevice->setText("자산번호를 입력해주세요.");
+		return;
+	}
+	if (barcode.at(barcode.size() - 1) == '\n')
+	{
+		QStringRef subString(&barcode, 0, barcode.size() - 1);
+		edBarcode->setText(subString.toString());
+		edBarcode->setAlignment(Qt::AlignHCenter);
+		barcode = subString.toString();
+	}
+
+	bool validate;
+	int noDevice = barcode.toInt(&validate);
+	if (validate)
+		NetWorker::instance()->searchDeviceBorrowed(noDevice)->request();
+	else
+		edNameDevice->setText("유효하지 않은 자산번호입니다.");
 }

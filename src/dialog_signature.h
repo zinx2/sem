@@ -45,7 +45,7 @@ class DialogSignature : public QGraphicsView
 	Q_OBJECT
 public:
 	explicit DialogSignature(QWidget *parent = 0);
-	bool toImage();
+	void toImage();
 
 	void init();
 private:

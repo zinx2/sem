@@ -8,9 +8,11 @@ class DialogAlarm : public WidgetDialog
 public:
 	explicit DialogAlarm(QString title, QString content, int width, int height, QWidget *parent = 0);
 
+	void setMessage(QString txt);
 	public slots:
 	void confirm() override;
 
 private:
 	QWidget* m_zoneMessage;
+	QLabel* m_lbMessage;
 };

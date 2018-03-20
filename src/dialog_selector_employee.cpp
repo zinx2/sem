@@ -2,11 +2,15 @@
 #include "cs_networker.h"
 #include "cs_command.h"
 
-DialogSelectorEmployee::DialogSelectorEmployee(QString title, int width, int height, QWidget *parent)
+DialogSelectorEmployee::DialogSelectorEmployee(QString title, int width, int height, bool isAdmin, QWidget *parent)
 	: WidgetDialog(title, width, height, parent)
 {
+	m_admin = isAdmin;
 	m_width = width; m_height = height;
 	setModal(true);
+
+	NetWorker* n = NetWorker::instance();
+	n->getUserList()->request();
 
 	btnConfirm = new Command("confirm", "확인", 70, 30);
 	btnConfirm->setStyleSheet("background: #e1e1e1;");
@@ -25,9 +29,6 @@ DialogSelectorEmployee::DialogSelectorEmployee(QString title, int width, int hei
 	m_wdTail->layout()->addWidget(btnConfirm);
 	m_wdTail->layout()->addWidget(btnCancel);
 	
-    NetWorker* n = NetWorker::instance();
-	n->getUserList()->request();
-
 	m_zoneEmployees = new QWidget(this);
 	m_zoneEmployees->setLayout(new QVBoxLayout(m_zoneEmployees));
 	m_zoneEmployees->setFixedSize(m_width, m_height);
@@ -56,6 +57,17 @@ void DialogSelectorEmployee::refresh()
 	int cnt = m->countEmployee();
 	if (cnt <= 0) return;
 
+	QList<int> listAdmin;
+	if (m_admin)
+	{
+		for (int row = 0; row < m->countEmployee(); row++)
+		{
+			Employee* dv = m->employees().at(row);
+			if (dv->manager()) listAdmin.append(row);
+		}
+		cnt = listAdmin.count();
+	}
+
 	if (m_table != nullptr)
 		m_zoneEmployees->layout()->removeWidget(m_table);
 
@@ -66,28 +78,54 @@ void DialogSelectorEmployee::refresh()
 	m_table->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	m_table->setSelectionBehavior(QAbstractItemView::SelectRows);
 	m_table->setSelectionMode(QAbstractItemView::SingleSelection);
-	m_table->setFixedSize(m_width, m_height);
+	m_table->setFixedSize(m_width, m_height - m_wdTail->height());
 	m_table->horizontalScrollBar()->setDisabled(true);
 	m_table->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	updateTable();
 	m_table->setHorizontalHeaderLabels(tableHeader);
 	m_table->verticalHeader()->hide();
 
-	for (int row = 0; row < cnt; row++)
+	if (m_admin)
 	{
-		Employee* dv = m->employees().at(row);
+		int row = 0;
+		foreach(int index, listAdmin)
+		{
+			Employee* dv = m->employees().at(index);
 
-		QTableWidgetItem* item0 = new QTableWidgetItem(QString("%1").arg(row + 1));
-		item0->setTextAlignment(Qt::AlignCenter);
-		m_table->setItem(row, 0, item0);
+			QTableWidgetItem* item0 = new QTableWidgetItem(QString("%1").arg(row + 1));
+			item0->setTextAlignment(Qt::AlignCenter);
+			m_table->setItem(row, 0, item0);
 
-		QTableWidgetItem* item1 = new QTableWidgetItem(dv->nameUser());
-		item1->setTextAlignment(Qt::AlignCenter);
-		m_table->setItem(row, 1, item1);
+			QTableWidgetItem* item1 = new QTableWidgetItem(dv->nameUser());
+			item1->setTextAlignment(Qt::AlignCenter);
+			m_table->setItem(row, 1, item1);
 
-		QTableWidgetItem* item2 = new QTableWidgetItem(dv->manager() ? "O" : "X");
-		item2->setTextAlignment(Qt::AlignCenter);
-		m_table->setItem(row, 2, item2);
+			QTableWidgetItem* item2 = new QTableWidgetItem(dv->manager() ? "O" : "X");
+			item2->setTextAlignment(Qt::AlignCenter);
+			m_table->setItem(row, 2, item2);
+
+			m_listNoUser.append(dv->noUser());
+			row++;
+		}
+	}
+	else
+	{
+		for (int row = 0; row < cnt; row++)
+		{
+			Employee* dv = m->employees().at(row);
+
+			QTableWidgetItem* item0 = new QTableWidgetItem(QString("%1").arg(row + 1));
+			item0->setTextAlignment(Qt::AlignCenter);
+			m_table->setItem(row, 0, item0);
+
+			QTableWidgetItem* item1 = new QTableWidgetItem(dv->nameUser());
+			item1->setTextAlignment(Qt::AlignCenter);
+			m_table->setItem(row, 1, item1);
+
+			QTableWidgetItem* item2 = new QTableWidgetItem(dv->manager() ? "O" : "X");
+			item2->setTextAlignment(Qt::AlignCenter);
+			m_table->setItem(row, 2, item2);
+		}
 	}
 	m_zoneEmployees->layout()->addWidget(m_table);
 	update();
@@ -98,7 +136,7 @@ void DialogSelectorEmployee::refresh()
 
 void DialogSelectorEmployee::updateTable()
 {
-	m_table->setFixedSize(m_width, m_height);
+	m_table->setFixedSize(m_width, m_height - m_wdTail->height());
 	m_table->setColumnWidth(0, m_table->width() * 0.10);
 	m_table->setColumnWidth(1, m_table->width() * 0.70);
 	m_table->setColumnWidth(2, m_table->width() * 0.20 -10);
@@ -106,7 +144,11 @@ void DialogSelectorEmployee::updateTable()
 }
 void DialogSelectorEmployee::confirm()
 {
-	m_parent->notify(m_table->currentRow());
+	if(m_admin)
+		m_parent->notify(m_listNoUser.at(m_table->currentRow()));
+	else 
+		m_parent->notify(m_table->currentRow());
+
 	close();
 }
 void DialogSelectorEmployee::cancel()

@@ -17,6 +17,7 @@ public:
 	void init();
 	void recognize();
 	void exit();
+	void search();
 
 private:
 	QWidget* m_zoneBarcode;

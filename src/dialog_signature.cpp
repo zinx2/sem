@@ -20,11 +20,15 @@ void DialogSignature::init()
 {
 	setScene(new PaintScene(width, height, this));
 }
-bool DialogSignature::toImage()
+void DialogSignature::toImage()
 {
-	QString fileName = QDir::currentPath() + "/tmp.png";
+	QString fileName = QDir::currentPath() + "/tmp.jpg";
 	QPixmap pixMap = QPixmap::grabWidget(this);
-	return pixMap.save(fileName);
+
+	if (pixMap.save(fileName))
+	{
+		NetWorker::instance()->uploadFile(fileName)->requestFile();
+	}
 }
 
 PaintScene::PaintScene(int width, int height, QObject *parent) : QGraphicsScene(parent) 

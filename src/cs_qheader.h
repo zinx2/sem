@@ -34,6 +34,9 @@
 #include <QMessageBox>
 #include <QCheckBox>
 #include <QDateTime>
+
+#include <QRadioButton>
+#include <QTimer>
 //
 //#include "cs_qheader.h"
 //#include "cs_design.h"

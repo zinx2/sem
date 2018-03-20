@@ -24,8 +24,8 @@ public:
 	const QString testColor06 = "#1caf9a";
 	const QString testColor07 = "#ffce44";
 
-	const QString btnSelectedStyle = "color: white; background-color: #1caf9a";
-	const QString btnReleasedStyle = "color: white; background-color: transparent";
+	const QString btnSelectedStyle = "color: white; background-color: #1caf9a; font-weight: bold;";
+	const QString btnReleasedStyle = "color: white; background-color: transparent;";
 };
 
 class Design : public QObject {
@@ -38,6 +38,7 @@ class Design : public QObject {
 		Q_PROPERTY(int heightPage READ heightPage WRITE setHeightPage NOTIFY heightPageChanged)
 		Q_PROPERTY(int widthUtil READ widthUtil  WRITE setWidthUtil  NOTIFY widthUtilChanged)
 		Q_PROPERTY(int heightUtil READ heightUtil WRITE setHeightUtil NOTIFY heightUtilChanged)
+		Q_PROPERTY(int heightTitleBar READ heightTitleBar WRITE setHeightTitleBar NOTIFY heightTitleBarChanged)
 
 private:
 	Design();
@@ -63,6 +64,7 @@ public:
 	int heightPage() const { return m_heightPage; }
 	int widthUtil() const { return m_widthUtil; }
 	int heightUtil() const { return m_heightUtil; }
+	int heightTitleBar() const { return m_heightTitleBar; }
 	void initialize();
 
 	public slots:
@@ -75,6 +77,7 @@ public:
 	void setHeightPage(const int &m) { m_heightPage = m; emit heightPageChanged(); }
 	void setWidthUtil(const int &m) { m_widthUtil = m; emit widthUtilChanged(); }
 	void setHeightUtil(const int &m) { m_heightUtil = m; emit heightUtilChanged(); }
+	void setHeightTitleBar(const int &m) { m_heightTitleBar = m; emit heightTitleBarChanged(); }
 
 signals:
 	void widthWindowChanged();
@@ -85,6 +88,7 @@ signals:
 	void heightPageChanged();
 	void widthUtilChanged();
 	void heightUtilChanged();
+	void heightTitleBarChanged();
 
 private:
 
@@ -99,6 +103,7 @@ private:
 
 	int m_widthPage = m_widthWindow;
 	int m_heightPage = m_heightWindow;
+	int m_heightTitleBar = 40;
 };
 //extern Design D;
 

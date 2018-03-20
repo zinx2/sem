@@ -5,6 +5,7 @@
 
 class DialogQuestion; 
 class DialogAlarm; class Command; class Employee; class NetWorker;
+class CPTextEdit; class CPWidget;
 class DialogFormDeviceBorrow : public WidgetDialog
 {
 	Q_OBJECT
@@ -24,26 +25,20 @@ public:
 	void finish();
 	void activate();
 	void search();
-	void check(int state);
 	void alarm(bool isSuccess);
 	void sign(bool isSuccess);
 
 private:
-	QWidget* m_zoneDevice;
-	QWidget* m_zoneName;
-	QWidget* m_zoneUse;
-	QWidget* m_zoneSecure;
-	QWidget* m_zoneSign;
-
-	QTextEdit* edNameDevice;
-	QTextEdit* edNoAsset;
-	QTextEdit* edNameUserOrAdmin;
+	CPTextEdit* edNameDevice;
+	CPTextEdit* edNoAsset;
+	CPTextEdit* edNameUserOrAdmin;
 	QTextEdit* edDateBorrowedOrReturned;
 	QTextEdit* edUse;
 
 	QLabel* m_lbMessage;
 
-	QCheckBox* cbSecure;
+	QRadioButton* rbYes;
+	QRadioButton* rbNo;
 	Command* btnConfirm;
 
 	DialogSignature* szSign;

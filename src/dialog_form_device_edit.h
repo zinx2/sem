@@ -5,13 +5,13 @@
 
 class DialogQuestion;
 class DialogAlarm; class Command; class Part; class NetWorker;
-class CPTextEdit; 
-class DialogFormDeviceAdd : public WidgetDialog
+class CPTextEdit; class Device;
+class DialogFormDeviceEdit : public WidgetDialog
 {
 	Q_OBJECT
 public:
 	//type 0:대출, 1:반납
-	explicit DialogFormDeviceAdd(QString title, int width, int height, QWidget *parent = 0);
+	explicit DialogFormDeviceEdit(int row, QString title, int width, int height, QWidget *parent = 0);
 
 	void setData(QString noAsset);
 	void notify(int row);
@@ -27,7 +27,7 @@ public:
 	void check(int state);
 	void init();
 
-private:	
+private:
 	CPTextEdit* m_edNameDevice;
 	CPTextEdit* m_edNoAsset;
 	CPTextEdit* m_edPart;
@@ -43,6 +43,7 @@ private:
 	DialogQuestion* m_question;
 
 	Part* m_part;
+	Device* m_device;
 	NetWorker* m_net;
 	bool notified = false;
 	void error(QString message);

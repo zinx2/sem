@@ -2,17 +2,20 @@
 #include "dialog_alarm.h"
 #include "dialog_question.h"
 #include "dialog_selector_employee.h"
+#include "cs_networker.h"
 #include "cs_command.h"
 #include "cs_model.h"
-DialogFormDeviceReturn::DialogFormDeviceReturn(QString title, int width, int height, QWidget *parent)
+#include "cs_component.h"
+DialogFormDeviceReturn::DialogFormDeviceReturn(int noDevice, QString title, int width, int height, QWidget *parent)
     : WidgetDialog(title, width, height, parent)
 {
+	m_noDevice = noDevice;
 	setModal(true);
     btnConfirm = new Command("confirm", "확인", 70, 30);
     btnConfirm->setStyleSheet("background: #e1e1e1;");
     Command* btnCancel = new Command("cancel", "취소", 70, 30);
     btnCancel->setStyleSheet("background: #e1e1e1;");
-    Command* btnSaerch = new Command("search", "직원찾기", 70, 30);
+    Command* btnSaerch = new Command("search", "직원찾기", 70, 25);
     btnSaerch->setStyleSheet("background: #e1e1e1;");
     Command* btnInit = new Command("init", "초기화", 70, 30);
     btnInit->setStyleSheet("background: #e1e1e1;");
@@ -26,120 +29,64 @@ DialogFormDeviceReturn::DialogFormDeviceReturn(QString title, int width, int hei
 	m_wdTail->layout()->addWidget(btnConfirm);
 	m_wdTail->layout()->addWidget(btnCancel);
 
-	m_zoneDevice = new QWidget(this);
-	m_zoneDevice->setLayout(new QHBoxLayout(m_zoneDevice));
-	m_zoneDevice->setFixedSize(width, 55);
-	//m_zoneName->setStyleSheet("background:red");
-	m_zoneDevice->layout()->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
-	m_zoneDevice->layout()->setMargin(0);
-	m_zoneDevice->layout()->setSpacing(5);
-	m_zoneDevice->layout()->setContentsMargins(10, 10, 0, 0);
-	QLabel* lbDevice = new QLabel("장비명");
-	lbDevice->setFixedSize(35, 25);
-	lbDevice->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
-	edNameDevice = new QTextEdit(this);
-	edNameDevice->setFixedSize(200, 25);
-	edNameDevice->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
-	edNameDevice->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	edNameDevice->setReadOnly(true);
-	edNameDevice->setStyleSheet("background:white;");
-	m_zoneDevice->layout()->addWidget(lbDevice);
-	m_zoneDevice->layout()->addWidget(edNameDevice);
-	QLabel* lbNoAsset = new QLabel("자산번호");
-	lbNoAsset->setFixedSize(60, 30);
-	lbNoAsset->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
-	edNoAsset = new QTextEdit("");
-	edNoAsset->setFixedSize(150, 25);
-	edNoAsset->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
-	edNoAsset->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	edNoAsset->setReadOnly(true);
-	edNoAsset->setStyleSheet("background:white; padding-top:2px;");
-	m_zoneDevice->layout()->addWidget(lbNoAsset);
-	m_zoneDevice->layout()->addWidget(edNoAsset);
-	m_wdContents->layout()->addWidget(m_zoneDevice);
+	Device* dv = m->searchedDevice();
 
-    m_zoneName = new QWidget(this);
-    m_zoneName->setLayout(new QHBoxLayout(m_zoneName));
-    m_zoneName->setFixedSize(width, 40);
-    //m_zoneName->setStyleSheet("background:red");
-    m_zoneName->layout()->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
-    m_zoneName->layout()->setMargin(0);
-    m_zoneName->layout()->setSpacing(5);
-    m_zoneName->layout()->setContentsMargins(10, 10, 0, 0);
-    QLabel* lbName = new QLabel("확인자");
-    lbName->setFixedSize(35, 30);
-    lbName->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
-    m_zoneName->layout()->addWidget(lbName);
-    edNameUserOrAdmin = new QTextEdit("");
-    edNameUserOrAdmin->setFixedSize(130, 25);
-    edNameUserOrAdmin->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
-    edNameUserOrAdmin->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    edNameUserOrAdmin->setReadOnly(true);
-	edNameUserOrAdmin->setStyleSheet("background:white; padding-top:2px;");
-    m_zoneName->layout()->addWidget(edNameUserOrAdmin);
-    m_zoneName->layout()->addWidget(btnSaerch);
-	QLabel* lbDate = new QLabel("반납일");
-    lbDate->setFixedSize(55, 30);
-	lbDate->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
-	edDateBorrowedOrReturned = new QTextEdit("");
-	edDateBorrowedOrReturned->setFixedSize(150, 25);
-	edDateBorrowedOrReturned->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
-	edDateBorrowedOrReturned->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	edDateBorrowedOrReturned->setReadOnly(true);
-	edDateBorrowedOrReturned->setStyleSheet("background:white; padding-top:2px;");
-	m_zoneName->layout()->addWidget(lbDate);
-	m_zoneName->layout()->addWidget(edDateBorrowedOrReturned);
-    m_wdContents->layout()->addWidget(m_zoneName);
+	/* ROW 1 */
+	edNameDevice = (new CPTextEdit(200, this))->initReadOnly(true)->initText(dv->nameDevice());
+	edNoAsset = (new CPTextEdit(170, this))->initReadOnly(true)->initText(dv->noAsset());
+	m_wdContents->layout()->addWidget(
+		(new CPWidget(width, 35, new QHBoxLayout))
+		->initContentsMargins(10, 0, 10, 0)
+		->append(new CPLabel(35, 25, "장비명"))
+		->append(edNameDevice)
+		->append(new CPLabel(60, 25, "자산번호"))
+		->append(edNoAsset));
 
-    m_zoneUse = new QWidget(this);
-    m_zoneUse->setLayout(new QVBoxLayout(m_zoneUse));
-    m_zoneUse->setFixedSize(width, 110);
-    m_zoneUse->layout()->setAlignment(Qt::AlignTop);
-    m_zoneUse->layout()->setContentsMargins(10, 0, 0, 0);
-    QLabel* lbUse = new QLabel("용도");
-    lbUse->setFixedSize(70, 25);
-    lbUse->setAlignment(Qt::AlignBottom);
-    m_zoneUse->layout()->addWidget(lbUse);
-    edUse = new QTextEdit(m_zoneUse);
-    edUse->setFixedSize(width-20, 75);
-    edUse->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    edUse->setStyleSheet("background: white;");
-    m_zoneUse->layout()->addWidget(edUse);
-    //m_zoneUse->setStyleSheet("background:green");
-    m_wdContents->layout()->addWidget(m_zoneUse);
-    m_zoneUse->setEnabled(false);
+	/* ROW 2 */
+	edNameUserOrAdmin = (new CPTextEdit(130, this))->initReadOnly(true);
+	edDateBorrowedOrReturned = (new CPTextEdit(170, this))->initReadOnly(true)->initText(QDateTime::currentDateTime().toString("yyyy-MM-dd"));
+	m_wdContents->layout()->addWidget(
+		(new CPWidget(width, 35, new QHBoxLayout))
+		->initContentsMargins(10, 0, 10, 0)
+		->append(new CPLabel(35, 25, "확인자"))
+		->append(edNameUserOrAdmin)
+		->append(btnSaerch)
+		->append(new CPLabel(55, 25, "반납일"))
+		->append(edDateBorrowedOrReturned));
 
-    m_zoneSecure = new QWidget(this);
-    m_zoneSecure->setLayout(new QVBoxLayout(m_zoneSecure));
-    m_zoneSecure->setFixedSize(width, 30);
-    m_zoneSecure->layout()->setAlignment(Qt::AlignTop);
-    m_zoneSecure->layout()->setContentsMargins(10, 0, 0, 0);
-    //m_zoneSecure->setStyleSheet("background:yellow");
-    cbSecure = new QCheckBox("보안점검(초기화)", this);
-    cbSecure->setFixedSize(width, m_zoneSecure->height());
-    m_zoneSecure->layout()->addWidget(cbSecure);
-    m_wdContents->layout()->addWidget(m_zoneSecure);
-    m_zoneSecure->setEnabled(false);
+	/* ROW 3 */
+	edUse = (new CPTextEdit(width - 60, this))->initHeight(50)->initReadOnly(true)->initText(dv->memo());
+	m_wdContents->layout()->addWidget(
+		(new CPWidget(width, 60, new QHBoxLayout))
+		->initContentsMargins(10, 0, 10, 0)
+		->append((new CPLabel(35, 60, "용도"))->initAlignment(Qt::AlignTop | Qt::AlignRight))
+		->append(edUse));
 
-    m_zoneSign = new QWidget(this);
-    m_zoneSign->setLayout(new QVBoxLayout(m_zoneSign));
-    //m_zoneSign->setStyleSheet("background:blue");
-    m_zoneSign->setFixedSize(width, 210);
-    m_zoneSign->layout()->setAlignment(Qt::AlignTop);
-    m_zoneSign->layout()->setContentsMargins(10, 0, 0, 0);
-    QLabel* lbSign = new QLabel("서명");
-    lbSign->setFixedSize(70, 25);
-    lbSign->setAlignment(Qt::AlignBottom);
-    m_zoneSign->layout()->addWidget(lbSign);
-    szSign = new DialogSignature(m_zoneSign);
-    szSign->setFixedSize(width-20, 175);
-    m_zoneSign->layout()->addWidget(szSign);
-    m_wdContents->layout()->addWidget(m_zoneSign);
+	/* ROW 4 */
+	rbYes = new QRadioButton("예", this);
+	rbYes->setFixedWidth(50);
+	rbNo = new QRadioButton("아니오", this);
+	rbNo->setFixedWidth(70);
+	rbNo->setChecked(true);
+	m_wdContents->layout()->addWidget(
+		(new CPWidget(width, 35, new QHBoxLayout))
+		->initContentsMargins(10, 0, 10, 0)
+		->append((new CPLabel(130, 25, "보안점검(초기화) 여부"))->initAlignment(Qt::AlignVCenter | Qt::AlignLeft))
+		->append(rbYes)
+		->append(rbNo));
 
-    height = m_zoneName->height() + m_zoneUse->height() +
-            m_zoneSecure->height() + m_zoneSign->height() + m_zoneDevice->height();
-    m_wdContents->setFixedHeight(height);
-    setFixedHeight(height + 50);
+	/* ROW 5 */
+	szSign = new DialogSignature(this);
+	szSign->setFixedSize(width - 20, 175);
+	m_wdContents->layout()->addWidget(
+		(new CPWidget(width, 210, new QVBoxLayout))
+		->initContentsMargins(10, 0, 0, 0)
+		->append((new CPLabel(70, 25, "서명"))->initAlignment(Qt::AlignBottom))
+		->append(szSign));
+
+	height = 35 + 75 + 35 + 210 + 35;
+	m_wdContents->setFixedHeight(height);
+	setFixedHeight(height + 35);
 
     connect(btnConfirm, SIGNAL(clicked()), this, SLOT(confirm()));
     connect(btnCancel, SIGNAL(clicked()), this, SLOT(cancel()));
@@ -148,14 +95,15 @@ DialogFormDeviceReturn::DialogFormDeviceReturn(QString title, int width, int hei
 	connect(edNoAsset, SIGNAL(textChanged()), this, SLOT(activate()));
 	connect(edNameUserOrAdmin, SIGNAL(textChanged()), this, SLOT(activate()));
 	connect(edDateBorrowedOrReturned, SIGNAL(textChanged()), this, SLOT(activate()));
-	connect(cbSecure, SIGNAL(stateChanged(int)), this, SLOT(activate()));
+	connect(rbYes, SIGNAL(pressed()), this, SLOT(activate()));
+	connect(rbNo, SIGNAL(pressed()), this, SLOT(activate()));
 	connect(edUse, SIGNAL(textChanged()), this, SLOT(activate()));
 	connect(btnSaerch, SIGNAL(clicked()), this, SLOT(search()));
     connect(this, SIGNAL(rejected()), this, SLOT(cancel()));
 }
 void DialogFormDeviceReturn::search()
 {
-	DialogSelectorEmployee* selection = new DialogSelectorEmployee("직원 찾기", 400, 500, this);
+	DialogSelectorEmployee* selection = new DialogSelectorEmployee("직원 찾기", 400, 500, true, this);
 	selection->setParent(this);
 	selection->show();
 }
@@ -164,26 +112,16 @@ void DialogFormDeviceReturn::activate()
 	btnConfirm->setDisabled(edNameDevice->toPlainText().isEmpty() ||
 		edNoAsset->toPlainText().isEmpty() ||
 		edNameUserOrAdmin->toPlainText().isEmpty() ||
-		edDateBorrowedOrReturned->toPlainText().isEmpty() ||
-		edUse->toPlainText().isEmpty());
+        edDateBorrowedOrReturned->toPlainText().isEmpty());
 
 	if (edNameUserOrAdmin->toPlainText().isEmpty())
 	{
-		QString human = m_type == 0 ? "대출자" : "반납자";
-		m_lbMessage->setText(human + "를 선택해주세요.");
-	}
-	else if (edUse->toPlainText().isEmpty())
-	{
-		m_lbMessage->setText("용도를 기입해주세요.");
-	}
+		m_lbMessage->setText("확인자를 선택해주세요.");
+    }
 	else
 	{
 		m_lbMessage->setText("서명을 해주세요.");
 	}
-}
-void DialogFormDeviceReturn::check(int state)
-{
-	if(state>0) activate();
 }
 void DialogFormDeviceReturn::setData(QString noAsset)
 {
@@ -193,6 +131,7 @@ void DialogFormDeviceReturn::setData(QString noAsset)
 		{
 			edNameDevice->setText(d->nameDevice());
 			edNoAsset->setText(d->noAsset());
+			edUse->setText(d->memo());
 			QString currentTime = QDateTime::currentDateTime().toString("yyyy-MM-dd");
 			edDateBorrowedOrReturned->setText(currentTime);
 			break;
@@ -205,21 +144,20 @@ void DialogFormDeviceReturn::confirm()
 	QString strNameDevice = "장비명 : " + edNameDevice->toPlainText() + "\n";
 	QString strNoAsset = "자산번호 : " + edNoAsset->toPlainText() + "\n";
 	QString strDate = "대출날짜 : " + edDateBorrowedOrReturned->toPlainText() + "\n";
-	QString strNameUser = "대출자 : " + edNameUserOrAdmin->toPlainText() + "\n";
+	QString strNameUser = "확인자 : " + edNameUserOrAdmin->toPlainText() + "\n";
 	QString strUse = "용도 : " + edUse->toPlainText() + "\n";
 
-	QString strSecureO = "보안점검 : O\n";
-	QString strSecureX = "보안점검 : X\n";
+	QString strSecureO = rbYes->isChecked() ? "보안점검 : O\n" : "";
+	QString strSecureX = rbNo->isChecked() ? "보안점검 : X\n" : "";
 
-	QString askType = m_type == 0 ? "대출" : "반납";
 	m_question = new DialogQuestion(
 		"알림",
-		askType + "하시겠습니까?\n\n"
+        "반납하시겠습니까?\n\n"
 		+ strNameDevice
 		+ strNoAsset
 		+ strDate
 		+ strNameUser
-		+ (cbSecure->isChecked() ? strSecureO : strSecureX)
+		+ strSecureO + strSecureX
 		+ strUse, 300, 180);
 	m_question->show();
 
@@ -239,34 +177,17 @@ void DialogFormDeviceReturn::init()
 }
 void DialogFormDeviceReturn::renew()
 {
-	qDebug() << "renew";
-	QString strNameDevice = "장비명 : " + edNameDevice->toPlainText() + "\n";
-	QString strNoAsset = "자산번호 : " + edNoAsset->toPlainText() + "\n";
-	QString strDate = "대출날짜 : " + edDateBorrowedOrReturned->toPlainText() + "\n";
-	QString strNameUser = "대출자 : " + edNameUserOrAdmin->toPlainText() + "\n";
-	QString strUse = "용도 : " + edUse->toPlainText() + "\n";
+	NetWorker::instance()->returnDevice(
+		edNoAsset->toPlainText(),
+		m_employee->noUser(),
+		m_noDevice,
+		rbYes->isChecked())->request();
 
-	QString strSecureO = "보안점검 : O\n";
-	QString strSecureX = "보안점검 : X\n";
+	m_question->hide();
+	close();
 
-	//borrow device
 	//파일 업로드
 	//사인 전송
-
-	QString askType = m_type == 0 ? "대출" : "반납";
-	m_alarm = new DialogAlarm(
-		"알림",
-		askType + "이 완료되었습니다.\n\n"
-		+ strNameDevice
-		+ strNoAsset
-		+ strDate
-		+ strNameUser
-		+ (cbSecure->isChecked() ? strSecureO : strSecureX)
-		+ strUse, 300, 180);
-	m_alarm->show();
-
-	disconnect(m_question, SIGNAL(yes()), this, SLOT(renew()));
-	connect(m_alarm, SIGNAL(yes()), this, SLOT(finish()));
 }
 
 void DialogFormDeviceReturn::none()
@@ -283,9 +204,16 @@ void DialogFormDeviceReturn::finish()
 	close();
 }
 
-void DialogFormDeviceReturn::notify(int row)
+void DialogFormDeviceReturn::notify(int noUser)
 {
-	m_employee = m->employees().at(row);
+	foreach(Employee* e, m->employees())
+	{
+		if (noUser == e->noUser())
+		{
+			m_employee = e;
+			break;
+		}
+	}
 	edNameUserOrAdmin->setText(m_employee->nameUser());
 	update();
 }

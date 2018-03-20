@@ -22,8 +22,15 @@ MainWindow::MainWindow(QWidget *parent) :
 	frameMenu = ui->widget_menu;
 	framePage = ui->widget_list;
 
+
 	m = Model::instance();
 	ui->centralWidget->setStyleSheet("background-color:" + d->c().grary01);
+
+	m_alarm = new DialogAlarm("알림", m->notificator()->message(), 300, 100);
+	connect(m, SIGNAL(alarmedChanged()), this, SLOT(updatePage()));
+
+	m_inspectorBorrow = new DialogInspectorBorrow("장비 선택", 500, 200, this);
+	m_inspectorReturn = new DialogInspectorReturn("장비 선택", 500, 200, this);
 }
 
 MainWindow::~MainWindow()
@@ -97,48 +104,85 @@ void MainWindow::setWidget(QWidget* w, QRect geometry, QString color)
 
 void MainWindow::connections()
 {
-	connect(widgetMenu->commandProvider()->command(BTN_DEVICE_LIST), SIGNAL(clicked()), this, SLOT(listDVIces()));
-	connect(widgetMenu->commandProvider()->command(BTN_DEVICE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listMNGements()));
-	connect(widgetMenu->commandProvider()->command(BTN_EMPLOYEE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
+	connect(widgetMenu->commandProvider()->command(DEVICE_LIST), SIGNAL(clicked()), this, SLOT(listDVIcesWithPageInit()));
+	connect(widgetMenu->commandProvider()->command(DEVICE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listMNGementsWithPageInit()));
+	connect(widgetMenu->commandProvider()->command(EMPLOYEE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listEMPloyeesWithPageInit()));
 	connect(widgetMenu->btnBorrow(), SIGNAL(clicked()), this, SLOT(doBorrow()));
 	connect(widgetMenu->btnReturn(), SIGNAL(clicked()), this, SLOT(doReturn()));
 }
-
+void MainWindow::listDVIcesWithPageInit()
+{
+	m->setPageNumber(1);
+	listDVIces();
+}
+void MainWindow::listMNGementsWithPageInit()
+{
+	m->setPageNumber(1);
+	listMNGements();
+}
+void MainWindow::listEMPloyeesWithPageInit()
+{
+	m->setPageNumber(1);
+	listEMPloyees();
+}
 void MainWindow::listDVIces()
 {
-	//widgetPage->listDVIces();
-	widgetMenu->commandProvider()->select(BTN_DEVICE_LIST);
-	widgetPage->change(BTN_DEVICE_LIST);
-	//connect(widgetMenu->commandProvider()->command(BTN_DEVICE_LIST), SIGNAL(clicked()), this, SLOT(listDVIces()));
-	//connect(widgetMenu->commandProvider()->command(BTN_DEVICE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listMNGements()));
-	//connect(widgetMenu->commandProvider()->command(BTN_EMPLOYEE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
+	widgetMenu->commandProvider()->select(DEVICE_LIST);
+	widgetPage->change(DEVICE_LIST);
 }
-
 void MainWindow::listMNGements()
 {
-	//widgetPage->listMNGements();
-	widgetMenu->commandProvider()->select(BTN_DEVICE_MANAGE_LIST);
-	widgetPage->change(BTN_DEVICE_MANAGE_LIST);
-	//connect(widgetMenu->commandProvider()->command(BTN_DEVICE_LIST), SIGNAL(clicked()), this, SLOT(listDVIces()));
-	//connect(widgetMenu->commandProvider()->command(BTN_DEVICE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listMNGements()));
-	//connect(widgetMenu->commandProvider()->command(BTN_EMPLOYEE_MANAGE_LIST), SIGNAL(clicked()), this, SLOT(listEMPloyees()));
+	widgetMenu->commandProvider()->select(DEVICE_MANAGE_LIST);
+	widgetPage->change(DEVICE_MANAGE_LIST);
 }
-
 void MainWindow::listEMPloyees()
 {
-	//widgetPage->listEMPloyees();
-	widgetMenu->commandProvider()->select(BTN_EMPLOYEE_MANAGE_LIST);
-	widgetPage->change(BTN_EMPLOYEE_MANAGE_LIST);
+	widgetMenu->commandProvider()->select(EMPLOYEE_MANAGE_LIST);
+	widgetPage->change(EMPLOYEE_MANAGE_LIST);
 }
-
 void MainWindow::doBorrow()
 {
-	DialogInspectorBorrow* inspector = new DialogInspectorBorrow("장비 선택", 500, 200, this);
-	inspector->show();
-}
+	//m_inspectorBorrow->init();
+	//m_inspectorBorrow->show();
+	QString fileName = QDir::currentPath() + "/tmp.jpg";
+	/*QPixmap pixMap = QPixmap::grabWidget(this);
 
+	if (pixMap.save(fileName))
+	{*/
+	NetWorker::instance()->uploadFile(fileName)->requestFile();
+	//}
+}
 void MainWindow::doReturn()
 {
-	DialogInspectorReturn* inspector = new DialogInspectorReturn("장비 선택", 500, 200, this);
-	inspector->show();
+	m_inspectorReturn->init();
+	m_inspectorReturn->show();
+}
+void MainWindow::updatePage()
+{
+	if (m->alarmed())
+	{
+		if (m->notificator()->type() == Notificator::DVIBorrowedSearch) return;
+		if (m->notificator()->type() == Notificator::DVIReturnedSearch) return;
+		bool result = m->notificator()->result();
+		if (m->notificator()->dialog()) {
+			m_alarm->setMessage(result ?
+				"성공적으로 반영되었습니다." : m->notificator()->message());
+			m_alarm->show();
+		}
+
+		if (result)
+		{	
+			if (m->notificator()->type() == Notificator::DVIList) listDVIces();
+			else if (m->notificator()->type() == Notificator::MNGList) listMNGements();
+			else if (m->notificator()->type() == Notificator::DVIModified) QTimer::singleShot(500, this, SLOT(listDVIces()));
+			else if (m->notificator()->type() == Notificator::MNGModified) QTimer::singleShot(500, this, SLOT(listMNGements()));
+			else if (m->notificator()->type() == Notificator::EMPList) listEMPloyees();
+		}
+		else
+		{
+			m_alarm->setMessage(m->notificator()->message());
+			m_alarm->show();
+		}
+		m->alarm(false);
+	}
 }

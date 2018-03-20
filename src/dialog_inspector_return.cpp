@@ -2,6 +2,7 @@
 #include "dialog_form_device_return.h"
 #include "cs_command.h"
 #include "cs_model.h"
+#include "cs_networker.h"
 DialogInspectorReturn::DialogInspectorReturn(QString title, int width, int height, QWidget *parent) : WidgetDialog(title, width, height, parent)
 {
 	setModal(true);
@@ -64,10 +65,11 @@ DialogInspectorReturn::DialogInspectorReturn(QString title, int width, int heigh
 	connect(btnConfirm, SIGNAL(clicked()), this, SLOT(confirm()));
 	connect(btnCancel, SIGNAL(clicked()), this, SLOT(cancel()));
 	connect(btnInit, SIGNAL(clicked()), this, SLOT(init()));
-	connect(btnSearch, SIGNAL(clicked()), this, SLOT(recognize()));
-	connect(edBarcode, SIGNAL(textChanged()), this, SLOT(recognize()));
+	connect(btnSearch, SIGNAL(clicked()), this, SLOT(search()));
+	//connect(edBarcode, SIGNAL(textChanged()), this, SLOT(recognize()));
 	connect(this, SIGNAL(rejected()), this, SLOT(cancel()));
 	connect(m, SIGNAL(modalChanged()), this, SLOT(exit()));
+	connect(m, SIGNAL(alarmedChanged()), this, SLOT(recognize()));
 }
 void DialogInspectorReturn::exit()
 {
@@ -75,41 +77,51 @@ void DialogInspectorReturn::exit()
 }
 void DialogInspectorReturn::recognize()
 {
-	QString barcode = edBarcode->toPlainText();
-	if (barcode.size() > 0 && barcode.at(barcode.size() - 1) == '\n')
+	if (m->alarmed() && m->notificator()->type() == Notificator::DVIReturnedSearch)
 	{
-		qDebug() << edBarcode->toPlainText();
+		bool result = m->notificator()->result();
+		if (result)
+		{
+			Device* d = m->searchedDevice();
+			QString aboutDevice = d->nameDevice() + "\n";
+			aboutDevice += d->borrowed() ? "반납되지 않은 장비입니다." : "이미 반납된 장비입니다.";
+			btnConfirm->setEnabled(d->borrowed()); /* 대출되지 않았을 때만 대출버튼 사용가능 */
+			edNameDevice->setText(aboutDevice);
+		}
+		else
+		{
+			btnConfirm->setEnabled(false);
+			edNameDevice->setText("검색된 장비가 없습니다.");
+		}
+		update();
+		m->alarm(false);
+	}
+}
+void DialogInspectorReturn::search()
+{
+	QString barcode = edBarcode->toPlainText();
+	if (barcode.size() == 0) {
+		edNameDevice->setText("자산번호를 입력해주세요.");
+		return;
+	}
+	if (barcode.at(barcode.size() - 1) == '\n')
+	{
 		QStringRef subString(&barcode, 0, barcode.size() - 1);
 		edBarcode->setText(subString.toString());
 		edBarcode->setAlignment(Qt::AlignHCenter);
-
-		int searchedCnt = 0;
-		foreach(Device* d, m->devices())
-		{
-			if (!d->noAsset().compare(subString.toString()))
-			{
-				searchedCnt++;
-				QString aboutDevice = d->nameDevice() + "\n";
-				aboutDevice += d->borrowed() ? "반납되지 않은 장비입니다." : "이미 반납된 장비입니다.";
-				bool b = d->borrowed();
-				btnConfirm->setEnabled(d->borrowed()); /* 반납되지 않았을 때만 반납버튼 사용가능 */
-				edNameDevice->setText(aboutDevice);
-				update();
-				break;
-			}
-		}
-		if (searchedCnt == 0)
-		{
-			btnConfirm->setEnabled(false);	/* 검색된 장비가 없을 때는 검색버튼 사용불가 */
-			edNameDevice->setText("검색된 장비가 없습니다.");
-		}
-		QTextCursor tmpCursor = edBarcode->textCursor();
-		edBarcode->moveCursor(QTextCursor::EndOfLine);
+		barcode = subString.toString();
 	}
+
+	bool validate;
+	int noDevice = barcode.toInt(&validate);
+	if (validate)
+		NetWorker::instance()->searchDeviceReturned(noDevice)->request();
+	else
+		edNameDevice->setText("유효하지 않은 자산번호입니다.");
 }
 void DialogInspectorReturn::confirm()
 {
-	DialogFormDeviceReturn* wddSignature = new DialogFormDeviceReturn("반납하기", 500, 540, this);
+	DialogFormDeviceReturn* wddSignature = new DialogFormDeviceReturn(m_noDevice, "반납하기", 500, 540, this);
 	wddSignature->setData(edBarcode->toPlainText());
 	wddSignature->show();
 }

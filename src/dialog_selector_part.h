@@ -3,12 +3,12 @@
 #include "widget_dialog.h"
 
 class DialogFormDeviceBorrow; class Command;
-class DialogSelectorEmployee : public WidgetDialog
+class DialogSelectorPart : public WidgetDialog
 {
 	Q_OBJECT
 public:
 	//type 0:대출, 1:반
-	explicit DialogSelectorEmployee(QString title, int width, int height, bool isAdmin=false, QWidget *parent = 0);
+	explicit DialogSelectorPart(QString title, int width, int height, QWidget *parent = 0);
 
 	void setParent(WidgetDialog* parent);
 
@@ -19,7 +19,7 @@ public:
 	void activate();
 
 private:
-	QWidget* m_zoneEmployees;
+	QWidget* m_zoneParts;
 
 	QTableWidget* m_table = nullptr;
 	Command* btnConfirm;
@@ -28,8 +28,6 @@ private:
 
 	int m_width;
 	int m_height;
-	bool m_admin = false;
-	void updateTable();
 
-	QList<int> m_listNoUser;
+	void updateTable();
 };

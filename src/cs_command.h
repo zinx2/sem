@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "cs_qheader.h"
 #include "cs_design.h"
+#include <QStyle>
 class Command : public QPushButton
 {
 public:
@@ -10,9 +11,37 @@ public:
 		QFont font = this->font();
 		font.setPointSize(10);
 		this->setFont(font);
-		this->setText(name);
+		this->setText(name);	
 	}
 	QString tag() { return m_tag; }
+	Command* initStyleSheet(QString sheet) { setStyleSheet(sheet); return this; }
+	Command* initIcon(QString iconPath) {
+		QPixmap pixmap(iconPath);
+		QIcon icon(pixmap);
+		setIcon(icon);
+		setIconSize(pixmap.rect().size());
+		return this;
+	};
+	Command* initIcon(QString iconPath, QString txt) {
+		QPixmap pixmap(iconPath);
+		m_pixmap = pixmap;
+		m_txt = txt;
+		return this;
+	};
+	QPixmap m_pixmap;
+	QString m_txt;
+	void paintEvent(QPaintEvent* e)
+	{
+		QPushButton::paintEvent(e);
+
+		if (!m_pixmap.isNull())
+		{
+			const int y = (height() - m_pixmap.height()) / 2; // add margin if needed
+			QPainter painter(this);
+			painter.drawPixmap(10, y, m_pixmap); // hardcoded horizontal margin
+			painter.drawText(40, height()/2 + 5, m_txt);
+		}
+	}
 private:
 	QString m_tag;
 };

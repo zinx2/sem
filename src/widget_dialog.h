@@ -24,7 +24,4 @@ protected:
 	QWidget* m_wdTail;
 	Design* d;
 	Model* m;
-
-
-
 };
