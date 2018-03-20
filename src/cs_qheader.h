@@ -43,3 +43,9 @@
 //#include "cs_networker.h"
 //#include "cs_model.h"
 //#include "cs_command.h"
+#include <QtCore/QTextCodec>
+static QString qkor(const char *strKor)
+{
+	static QTextCodec *codec = QTextCodec::codecForName("eucKR");
+	return codec->toUnicode(strKor);
+}

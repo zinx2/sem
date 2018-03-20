@@ -32,13 +32,13 @@ WidgetMenu::WidgetMenu(QWidget *parent) : WWidget(parent)
 	mainWidget2->layout()->setSpacing(5);
 	mainWidget2->layout()->setAlignment(Qt::AlignBottom | Qt::AlignRight);
 
-	m_commandProvider->append((new Command(DEVICE_LIST, "", btnWidth, 40))->initIcon(":/imgs/clipboard_18.png", "장비목록"));
+	m_commandProvider->append((new Command(DEVICE_LIST, "", btnWidth, 40))->initIcon(":/imgs/clipboard_18.png", qkor("장비목록")));
 	mainWidget1->layout()->addWidget(m_commandProvider->command(DEVICE_LIST));
 
-	m_commandProvider->append((new Command(DEVICE_MANAGE_LIST, "", btnWidth, 40))->initIcon(":/imgs/clipboard_18.png", "관리대장"));
+	m_commandProvider->append((new Command(DEVICE_MANAGE_LIST, "", btnWidth, 40))->initIcon(":/imgs/clipboard_18.png", qkor("관리대장")));
 	mainWidget1->layout()->addWidget(m_commandProvider->command(DEVICE_MANAGE_LIST));
 
-	m_commandProvider->append((new Command(EMPLOYEE_MANAGE_LIST, "", btnWidth, 40))->initIcon(":/imgs/clipboard_18.png", "사원관리"));
+	m_commandProvider->append((new Command(EMPLOYEE_MANAGE_LIST, "", btnWidth, 40))->initIcon(":/imgs/clipboard_18.png", qkor("사원관리")));
 	mainWidget1->layout()->addWidget(m_commandProvider->command(EMPLOYEE_MANAGE_LIST));
 	
 	////

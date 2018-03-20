@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>imgs/clipboard_18.png</file>
+        <file>imgs/clipboard_24.png</file>
+        <file>imgs/clipboard_36.png</file>
+        <file>imgs/clipboard_48.png</file>
+        <file>imgs/export_18.png</file>
+        <file>imgs/export_24.png</file>
+        <file>imgs/export_36.png</file>
+        <file>imgs/export_48.png</file>
+        <file>imgs/exit_18.png</file>
+        <file>imgs/exit_24.png</file>
+        <file>imgs/exit_36.png</file>
+        <file>imgs/exit_48.png</file>
+    </qresource>
+</RCC>
